@@ -1,4 +1,4 @@
-package EndpointHitDto;
+package ru.practicum.dto.EndpointHitDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
-import static Common.Constants.DEFAULT_DATE_FORMAT;
+import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMAT;
 
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,7 +1,7 @@
-package enpointHit.model;
+package ru.practicum.service.enpointHit.model;
 
 import lombok.experimental.UtilityClass;
-import EndpointHitDto.AddEndpointHitDto;
+import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
 
 @UtilityClass
 public class EndpointHitMapper {

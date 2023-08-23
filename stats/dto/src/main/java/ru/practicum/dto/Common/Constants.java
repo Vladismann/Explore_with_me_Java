@@ -1,4 +1,4 @@
-package Common;
+package ru.practicum.dto.Common;
 
 import lombok.experimental.UtilityClass;
 

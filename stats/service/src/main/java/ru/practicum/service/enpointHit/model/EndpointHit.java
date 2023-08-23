@@ -1,4 +1,4 @@
-package enpointHit.model;
+package ru.practicum.service.enpointHit.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
