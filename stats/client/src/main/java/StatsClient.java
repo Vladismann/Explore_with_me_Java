@@ -4,7 +4,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import statsDto.HitDto;
+import EndpointHitDto.AddEndpointHitDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,8 +22,8 @@ public class StatsClient extends BaseClient {
         );
     }
 
-    public void create(HitDto hitDto) {
-        post("/hit", hitDto);
+    public void create(AddEndpointHitDto addEndpointHitDto) {
+        post("/hit", addEndpointHitDto);
     }
 
     public ResponseEntity<Object> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
