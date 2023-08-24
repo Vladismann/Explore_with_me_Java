@@ -25,11 +25,9 @@ public class EndpointHitService {
     @Transactional(readOnly = true)
     public List<GetStatsDto> getEndpointHitStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         if (unique) {
-            return uris.isEmpty() ?
-                    endpointHitRepo.findAllByTimestampBetweenDistinct(start, end) : endpointHitRepo.findAllByTimestampBetweenAndUrisInDistinct(start, end, uris);
+            return endpointHitRepo.findAllByTimestampBetweenAndUrisInDistinct(start, end, uris);
         } else {
-            return uris.isEmpty() ?
-                    endpointHitRepo.findAllByTimestampBetween(start, end) : endpointHitRepo.findAllByTimestampBetweenAndUrisIn(start, end, uris);
+            return endpointHitRepo.findAllByTimestampBetweenAndUrisIn(start, end, uris);
         }
     }
 }
