@@ -27,7 +27,7 @@ public class EndpointHitController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public GetEndpointHitDto add(@Valid @RequestBody AddEndpointHitDto addEndpointHitDto) {
+    public GetEndpointHitDto add(@RequestBody @Valid AddEndpointHitDto addEndpointHitDto) {
         log.info(RECEIVED_POST, "hit");
         return endpointHitService.addEndpointHit(addEndpointHitDto);
     }
