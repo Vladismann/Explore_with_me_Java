@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
+import ru.practicum.dto.EndpointHitDto.GetEndpointHitDto;
 import ru.practicum.dto.EndpointHitDto.GetStatsDto;
 import ru.practicum.service.enpointHit.model.EndpointHitMapper;
 import ru.practicum.service.enpointHit.repo.EndpointHitRepo;
@@ -18,8 +19,8 @@ public class EndpointHitService {
 
     private final EndpointHitRepo endpointHitRepo;
 
-    public AddEndpointHitDto addEndpointHit(AddEndpointHitDto addEndpointHitDto) {
-        return EndpointHitMapper.toAddEndpointHitDto(endpointHitRepo.save(EndpointHitMapper.toEndpointHit(addEndpointHitDto)));
+    public GetEndpointHitDto addEndpointHit(AddEndpointHitDto addEndpointHitDto) {
+        return EndpointHitMapper.toGetEndpointHitDto(endpointHitRepo.save(EndpointHitMapper.toEndpointHit(addEndpointHitDto)));
     }
 
     @Transactional(readOnly = true)

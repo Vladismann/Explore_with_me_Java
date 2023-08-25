@@ -14,7 +14,9 @@ import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMAT;
 @NoArgsConstructor
 @Data
 @Builder
-public class AddEndpointHitDto {
+public class GetEndpointHitDto {
+
+    private Long id;
 
     private String app;
 

@@ -6,9 +6,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
+import ru.practicum.dto.EndpointHitDto.GetEndpointHitDto;
 import ru.practicum.dto.EndpointHitDto.GetStatsDto;
 import ru.practicum.service.enpointHit.service.EndpointHitService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class EndpointHitController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public AddEndpointHitDto add(@RequestBody AddEndpointHitDto addEndpointHitDto) {
+    public GetEndpointHitDto add(@Valid @RequestBody AddEndpointHitDto addEndpointHitDto) {
         log.info(RECEIVED_POST, "hit");
         return endpointHitService.addEndpointHit(addEndpointHitDto);
     }

@@ -2,6 +2,7 @@ package ru.practicum.service.enpointHit.model;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
+import ru.practicum.dto.EndpointHitDto.GetEndpointHitDto;
 
 @UtilityClass
 public class EndpointHitMapper {
@@ -15,8 +16,8 @@ public class EndpointHitMapper {
                 .build();
     }
 
-    public AddEndpointHitDto toAddEndpointHitDto(EndpointHit endpointHit) {
-        return AddEndpointHitDto.builder()
+    public GetEndpointHitDto toGetEndpointHitDto(EndpointHit endpointHit) {
+        return GetEndpointHitDto.builder()
                 .id(endpointHit.getId())
                 .app(endpointHit.getApp())
                 .uri(endpointHit.getUri())
