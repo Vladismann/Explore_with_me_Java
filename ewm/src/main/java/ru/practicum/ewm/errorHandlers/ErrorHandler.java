@@ -58,4 +58,14 @@ public class ErrorHandler {
                 e.getMessage(),
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidation(final IllegalArgumentException e) {
+        log.info(e.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                INCORRECT_DATA,
+                e.getMessage(),
+                LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
+    }
 }

@@ -2,8 +2,10 @@ package ru.practicum.ewm.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.common.CustomPageRequest;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.user.dto.CreateUserDto;
 import ru.practicum.ewm.user.dto.GetUserDto;
@@ -39,7 +41,15 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetUserDto> getUsers(List<Long> ids, long from, long size) {
-        return null;
+    public List<GetUserDto> getUsers(List<Long> ids, int from, int size) {
+        Pageable pageable = new CustomPageRequest(from, size);
+        List<GetUserDto> users;
+        if (ids == null || ids.isEmpty()) {
+            users = UserMapper.userToGetUserDto(userRepo.findAll(pageable));
+        } else {
+            users = UserMapper.userToGetUserDto(userRepo.findByIdIn(ids, pageable));
+        }
+        log.info("Запрошен список пользователей в размере: {}", users.size());
+        return users;
     }
 }
