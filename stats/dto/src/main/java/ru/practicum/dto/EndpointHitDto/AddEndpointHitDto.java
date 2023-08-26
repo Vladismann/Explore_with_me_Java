@@ -17,16 +17,16 @@ import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMAT;
 @Builder
 public class AddEndpointHitDto {
 
-    @NotNull(message = "Укажите app")
+    @NotNull(message = "Specify the app")
     private String app;
 
-    @NotNull(message = "Укажите uri")
+    @NotNull(message = "Specify the uri")
     private String uri;
 
-    @NotNull(message = "Укажите ip")
+    @NotNull(message = "Specify the ip")
     private String ip;
 
-    @NotNull(message = "Укажите дату")
+    @NotNull(message = "Specify the date")
     @JsonFormat(pattern = DEFAULT_DATE_FORMAT, shape = JsonFormat.Shape.STRING)
     private LocalDateTime timestamp;
 }
