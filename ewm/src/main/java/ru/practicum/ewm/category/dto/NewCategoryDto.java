@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
@@ -14,5 +15,6 @@ import javax.validation.constraints.NotBlank;
 public class NewCategoryDto {
 
     @NotBlank(message = "Specify the category name")
+    @Size(min = 1, max = 50, message = "Allowable size of name 1-50 symbols")
     private String name;
 }
