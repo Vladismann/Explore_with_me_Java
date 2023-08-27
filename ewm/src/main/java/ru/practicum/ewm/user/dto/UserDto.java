@@ -5,16 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateUserDto {
+public class UserDto {
 
-    @NotBlank(message = "Specify the email")
     private String email;
-    @NotBlank(message = "Specify the name")
+    private long id;
     private String name;
 }

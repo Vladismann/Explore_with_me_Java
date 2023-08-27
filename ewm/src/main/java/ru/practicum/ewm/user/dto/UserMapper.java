@@ -10,26 +10,26 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class UserMapper {
 
-    public User createUserDtoToUser(CreateUserDto createUserDto) {
+    public User NewUserRequestToUser(NewUserRequest newUserRequest) {
         return User.builder()
-                .email(createUserDto.getEmail())
-                .name(createUserDto.getName())
+                .email(newUserRequest.getEmail())
+                .name(newUserRequest.getName())
                 .build();
     }
 
-    public GetUserDto userToGetUserDto(User user) {
-        return GetUserDto.builder()
+    public UserDto userToUserDto(User user) {
+        return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .build();
     }
 
-    public List<GetUserDto> userToGetUserDto(List<User> users) {
-        return users.stream().map(UserMapper::userToGetUserDto).collect(Collectors.toList());
+    public List<UserDto> userToUserDto(List<User> users) {
+        return users.stream().map(UserMapper::userToUserDto).collect(Collectors.toList());
     }
 
-    public List<GetUserDto> userToGetUserDto(Page<User> users) {
-        return users.stream().map(UserMapper::userToGetUserDto).collect(Collectors.toList());
+    public List<UserDto> userToUserDto(Page<User> users) {
+        return users.stream().map(UserMapper::userToUserDto).collect(Collectors.toList());
     }
 }

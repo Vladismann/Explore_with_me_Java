@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.user.dto.CreateUserDto;
-import ru.practicum.ewm.user.dto.GetUserDto;
+import ru.practicum.ewm.user.dto.NewUserRequest;
+import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.service.UserService;
 
 import javax.validation.Valid;
@@ -24,7 +24,7 @@ public class AdminUserController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public GetUserDto createUser(@Valid @RequestBody CreateUserDto user) {
+    public UserDto createUser(@Valid @RequestBody NewUserRequest user) {
         log.info(RECEIVED_POST, "/admin/users");
         return userService.createUser(user);
     }
@@ -36,9 +36,9 @@ public class AdminUserController {
     }
 
     @GetMapping()
-    public List<GetUserDto> getAllUsers(@RequestParam(required = false) List<Long> ids,
-                                        @RequestParam(defaultValue = "0") int from,
-                                        @RequestParam(defaultValue = "10") int size) {
+    public List<UserDto> getAllUsers(@RequestParam(required = false) List<Long> ids,
+                                     @RequestParam(defaultValue = "0") int from,
+                                     @RequestParam(defaultValue = "10") int size) {
         log.info(RECEIVED_GET, "/admin/users");
         return userService.getUsers(ids, from, size);
     }

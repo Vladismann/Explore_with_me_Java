@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.CustomPageRequest;
 import ru.practicum.ewm.exceptions.NotFoundException;
-import ru.practicum.ewm.user.dto.CreateUserDto;
-import ru.practicum.ewm.user.dto.GetUserDto;
+import ru.practicum.ewm.user.dto.NewUserRequest;
+import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repo.UserRepo;
@@ -24,10 +24,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
 
     @Override
-    public GetUserDto createUser(CreateUserDto dto) {
-        User user = userRepo.save(UserMapper.createUserDtoToUser(dto));
+    public UserDto createUser(NewUserRequest dto) {
+        User user = userRepo.save(UserMapper.NewUserRequestToUser(dto));
         log.info("Пользователь зарегистрирован: {}", user);
-        return UserMapper.userToGetUserDto(user);
+        return UserMapper.userToUserDto(user);
     }
 
     @Override
@@ -41,13 +41,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<GetUserDto> getUsers(List<Long> ids, int from, int size) {
+    public List<UserDto> getUsers(List<Long> ids, int from, int size) {
         Pageable pageable = new CustomPageRequest(from, size);
-        List<GetUserDto> users;
+        List<UserDto> users;
         if (ids == null || ids.isEmpty()) {
-            users = UserMapper.userToGetUserDto(userRepo.findAll(pageable));
+            users = UserMapper.userToUserDto(userRepo.findAll(pageable));
         } else {
-            users = UserMapper.userToGetUserDto(userRepo.findByIdIn(ids, pageable));
+            users = UserMapper.userToUserDto(userRepo.findByIdIn(ids, pageable));
         }
         log.info("Запрошен список пользователей в размере: {}", users.size());
         return users;

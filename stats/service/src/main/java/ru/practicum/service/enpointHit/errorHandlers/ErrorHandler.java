@@ -6,7 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.dto.Common.ErrorResponse;
+import ru.practicum.dto.Common.ApiError;
 
 import java.time.LocalDateTime;
 
@@ -19,9 +19,9 @@ public class ErrorHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException e) {
+    public ApiError handleValidationExceptions(MethodArgumentNotValidException e) {
         log.info(e.getMessage());
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        return new ApiError(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 INCORRECT_DATA,
                 e.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
@@ -29,9 +29,9 @@ public class ErrorHandler {
 
     @ExceptionHandler({Throwable.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleNotFound(final Throwable e) {
+    public ApiError handleNotFound(final Throwable e) {
         log.info(e.getMessage());
-        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+        return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 INCORRECT_DATA,
                 e.getMessage(),
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
