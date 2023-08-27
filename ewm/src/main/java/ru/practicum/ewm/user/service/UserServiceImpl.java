@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.common.CustomPageRequest;
-import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.user.dto.NewUserRequest;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserMapper;
@@ -32,9 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(long id) {
-        if (!userRepo.existsById(id)) {
-            throw new NotFoundException(String.format("User with id=%s was not found", id));
-        }
+        CommonMethods.checkObjectIsExists(id, userRepo);
         userRepo.deleteById(id);
         log.info("Пользователь удален: {}", id);
     }

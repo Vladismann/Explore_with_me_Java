@@ -1,6 +1,7 @@
 package ru.practicum.ewm.category.dto;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.data.domain.Page;
 import ru.practicum.ewm.category.model.Category;
 
 import java.util.List;
@@ -23,6 +24,10 @@ public class CategoryMapper {
     }
 
     public List<CategoryDto> categoryToCategoryDto(List<Category> categories) {
+        return categories.stream().map(CategoryMapper::categoryToCategoryDto).collect(Collectors.toList());
+    }
+
+    public List<CategoryDto> categoryToCategoryDto(Page<Category> categories) {
         return categories.stream().map(CategoryMapper::categoryToCategoryDto).collect(Collectors.toList());
     }
 }
