@@ -29,16 +29,6 @@ public class ErrorHandler {
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 
-    @ExceptionHandler({Throwable.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handleNotFound(final Throwable e) {
-        log.info(e.getMessage());
-        return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                INCORRECT_DATA,
-                e.getMessage(),
-                LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
-    }
-
     @ExceptionHandler({NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFound(final NotFoundException e) {
@@ -59,11 +49,21 @@ public class ErrorHandler {
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler({RuntimeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleValidation(final IllegalArgumentException e) {
+    public ApiError handleValidation(final RuntimeException e) {
         log.info(e.getMessage());
         return new ApiError(HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                INCORRECT_DATA,
+                e.getMessage(),
+                LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
+    }
+
+    @ExceptionHandler({Exception.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiError handleServerError(final Exception e) {
+        log.info(e.getMessage());
+        return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 INCORRECT_DATA,
                 e.getMessage(),
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
