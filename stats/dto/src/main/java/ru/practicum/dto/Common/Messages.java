@@ -15,5 +15,6 @@ public class Messages {
     public static final String INCORRECT_DATA = "Incorrectly made request.";
     public static final String NOT_FOUND = "The required object was not found.";
     public static final String INTEGRITY_CONSTRAINT= "Integrity constraint has been violated.";
+    public static final String WRONG_CONDITIONS = "For the requested operation the conditions are not met.";
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.dto.Common.ApiError;
 import ru.practicum.ewm.exceptions.NotFoundException;
+import ru.practicum.ewm.exceptions.WrongConditionsException;
 
 import java.time.LocalDateTime;
 
@@ -45,6 +46,15 @@ public class ErrorHandler {
         log.info(e.getMessage());
         return new ApiError(HttpStatus.CONFLICT.getReasonPhrase(),
                 INTEGRITY_CONSTRAINT,
+                e.getMessage(),
+                LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleConflict(final WrongConditionsException e) {
+        log.info(e.getMessage());
+        return new ApiError(HttpStatus.CONFLICT.getReasonPhrase(),
+                WRONG_CONDITIONS,
                 e.getMessage(),
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }

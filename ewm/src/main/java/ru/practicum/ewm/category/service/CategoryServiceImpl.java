@@ -12,6 +12,8 @@ import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repo.CategoryRepo;
 import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.common.CustomPageRequest;
+import ru.practicum.ewm.event.repo.EventRepo;
+import ru.practicum.ewm.exceptions.WrongConditionsException;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepo categoryRepo;
+    private final EventRepo eventRepo;
 
     @Override
     public CategoryDto createCategory(NewCategoryDto dto) {
@@ -33,6 +36,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(long id) {
         CommonMethods.checkObjectIsExists(id, categoryRepo);
+        if (!eventRepo.findAllByCategoryId(id).isEmpty()) {
+            throw new WrongConditionsException("The category is not empty");
+        }
         categoryRepo.deleteById(id);
         log.info("Удалена категория: {}", id);
     }

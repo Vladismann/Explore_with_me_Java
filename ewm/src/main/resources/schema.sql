@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS events (
         title VARCHAR(120) NOT NULL,
         annotation VARCHAR(2000) NOT NULL,
         description VARCHAR(7000) NOT NULL,
-        participantLimit BIGINT NOT NULL,
+        participant_limit BIGINT NOT NULL,
         category_id BIGINT NOT NULL REFERENCES categories(id),
         initiator_id BIGINT NOT NULL REFERENCES users(id),
         location_id BIGINT NOT NULL REFERENCES locations(id),
@@ -35,5 +35,5 @@ CREATE TABLE IF NOT EXISTS events (
         paid BOOLEAN NOT NULL,
         request_moderation BOOLEAN NOT NULL,
         state VARCHAR(50) NOT NULL,
-        published_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        published_on TIMESTAMP NOT NULL
 );
