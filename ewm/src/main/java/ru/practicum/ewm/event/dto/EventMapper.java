@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.event.model.Event;
-import ru.practicum.ewm.event.model.EventState;
+import ru.practicum.ewm.event.model.EventStateAction;
 import ru.practicum.ewm.event.model.Location;
 import ru.practicum.ewm.user.dto.UserShortDto;
 import ru.practicum.ewm.user.model.User;
@@ -13,14 +13,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.ewm.event.model.EventState.CANCELED;
+import static ru.practicum.ewm.event.model.EventState.PENDING;
+import static ru.practicum.ewm.event.model.EventStateAction.SEND_TO_REVIEW;
+
 @UtilityClass
 public class EventMapper {
 
-    public Location LocationDtoToLocation(LocationDto locationDto) {
+    public Location locationDtoToLocation(LocationDto locationDto) {
         return Location.builder().lat(locationDto.getLat()).lon(locationDto.getLon()).build();
     }
 
-    public Event NewEventDtoToEvent(NewEventDto newEventDto, Category category, User user, Location location) {
+    public Event newEventDtoToEvent(NewEventDto newEventDto, Category category, User user, Location location) {
         return Event.builder()
                 .title(newEventDto.getTitle())
                 .annotation(newEventDto.getAnnotation())
@@ -33,11 +37,11 @@ public class EventMapper {
                 .eventDate(newEventDto.getEventDate())
                 .paid(newEventDto.isPaid())
                 .requestModeration(newEventDto.isRequestModeration())
-                .state(EventState.PENDING)
+                .state(PENDING)
                 .build();
     }
 
-    public EventFullDto EventToEventFullDto(Event event) {
+    public EventFullDto eventToEventFullDto(Event event) {
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())
                 .category(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()))
@@ -55,7 +59,46 @@ public class EventMapper {
                 .build();
     }
 
-    public List<EventFullDto> EventToEventFullDto(List<Event> event) {
-        return event.stream().map(EventMapper::EventToEventFullDto).collect(Collectors.toList());
+    public List<EventFullDto> eventToEventFullDto(List<Event> event) {
+        return event.stream().map(EventMapper::eventToEventFullDto).collect(Collectors.toList());
+    }
+
+    public Event UpdateEventUser(UpdateEventUserRequest updateEvent, Event event) {
+        String newAnnotation = updateEvent.getAnnotation();
+        String newDescription = updateEvent.getDescription();
+        LocalDateTime newEventDate = updateEvent.getEventDate();
+        Boolean newPaid = updateEvent.getPaid();
+        int newParticipantLimit = updateEvent.getParticipantLimit();
+        Boolean newRequestModeration = updateEvent.getRequestModeration();
+        String newTitle = updateEvent.getTitle();
+        EventStateAction newState = updateEvent.getStateAction();
+
+        if (newAnnotation != null && !newAnnotation.isBlank()) {
+            event.setAnnotation(newAnnotation);
+        }
+        if (newDescription != null && !newDescription.isBlank()) {
+            event.setDescription(newDescription);
+        }
+        if (newEventDate != null) {
+            event.setEventDate(newEventDate);
+        }
+        if (newPaid != null) {
+            event.setPaid(newPaid);
+        }
+        if (newParticipantLimit != 0 && newParticipantLimit != event.getParticipantLimit()) {
+            event.setParticipantLimit(newParticipantLimit);
+        }
+        if (newRequestModeration != null) {
+            event.setRequestModeration(updateEvent.getRequestModeration());
+        }
+        if (newTitle != null && !newTitle.isBlank()) {
+            event.setTitle(updateEvent.getTitle());
+        }
+        if (newState.equals(SEND_TO_REVIEW)) {
+            event.setState(PENDING);
+        } else {
+            event.setState(CANCELED);
+        }
+        return event;
     }
 }
