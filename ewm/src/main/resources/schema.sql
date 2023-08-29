@@ -35,5 +35,5 @@ CREATE TABLE IF NOT EXISTS events (
         paid BOOLEAN NOT NULL,
         request_moderation BOOLEAN NOT NULL,
         state VARCHAR(50) NOT NULL,
-        published_on TIMESTAMP NOT NULL
+        published_on TIMESTAMP
 );

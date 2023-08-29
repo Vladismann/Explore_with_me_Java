@@ -10,6 +10,8 @@ import ru.practicum.ewm.user.dto.UserShortDto;
 import ru.practicum.ewm.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class EventMapper {
@@ -51,5 +53,9 @@ public class EventMapper {
                 .state(event.getState())
                 .title(event.getTitle())
                 .build();
+    }
+
+    public List<EventFullDto> EventToEventFullDto(List<Event> event) {
+        return event.stream().map(EventMapper::EventToEventFullDto).collect(Collectors.toList());
     }
 }
