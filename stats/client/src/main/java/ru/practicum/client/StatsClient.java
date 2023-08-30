@@ -42,4 +42,10 @@ public class StatsClient extends BaseClient {
         );
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
+
+    public ResponseEntity<Object> get(List<String> uris) {
+        String urisString = String.join(",", uris);
+        Map<String, Object> parameters = Map.of("uris", urisString);
+        return get("/views?uris={uris}", parameters);
+    }
 }

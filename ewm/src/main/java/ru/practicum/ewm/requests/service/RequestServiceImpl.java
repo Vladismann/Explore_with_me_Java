@@ -33,11 +33,11 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepo requestRepo;
 
     @Override
-    public ParticipationRequestDto create(Long userId, Long eventId) {
+    public ParticipationRequestDto createRequest(Long userId, Long eventId) {
         CommonMethods.checkObjectIsExists(userId, userRepo);
         CommonMethods.checkObjectIsExists(eventId, eventRepo);
         Event event = eventRepo.getReferenceById(eventId);
-        if (requestRepo.findByRequestorIdAndEventId(userId, eventId) != null) {
+        if (requestRepo.findByRequesterIdAndEventId(userId, eventId) != null) {
             throw new WrongConditionsException("Request already exists.");
         }
         if (event.getInitiator().getId() == userId) {
@@ -51,7 +51,7 @@ public class RequestServiceImpl implements RequestService {
         }
         User user = userRepo.getReferenceById(userId);
         Request request = new Request();
-        request.setRequestor(user);
+        request.setRequester(user);
         request.setEvent(event);
         if (!event.getRequestModeration()) {
             request.setStatus(CONFIRMED);
@@ -65,7 +65,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ParticipationRequestDto update(Long userId, Long requestId) {
+    public ParticipationRequestDto updateRequest(Long userId, Long requestId) {
         return null;
     }
 

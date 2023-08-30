@@ -8,16 +8,19 @@ import ru.practicum.client.StatsClient;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
 import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.event.dto.EventFullDto;
+import ru.practicum.ewm.event.dto.EventMapper;
 import ru.practicum.ewm.event.dto.search.PublicSearchParameters;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repo.EventRepo;
 import ru.practicum.ewm.exceptions.NotFoundException;
+import ru.practicum.ewm.requests.repo.RequestRepo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.practicum.ewm.event.model.EventState.PUBLISHED;
+import static ru.practicum.ewm.requests.model.StateParticipation.CONFIRMED;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     private final EventRepo eventRepo;
     private final StatsClient stats;
+    private final RequestRepo requestRepo;
 
     private void sendHit(HttpServletRequest servletRequest) {
         AddEndpointHitDto addEndpointHitDto = AddEndpointHitDto.builder()
@@ -39,6 +43,10 @@ public class PublicEventServiceImpl implements PublicEventService {
         stats.create(addEndpointHitDto);
     }
 
+    private Long getViews(List<Long> eventsIds) {
+        return null;
+    }
+
     @Override
     public EventFullDto getEvent(Long eventId, HttpServletRequest servletRequest) {
         CommonMethods.checkObjectIsExists(eventId, eventRepo);
@@ -47,6 +55,8 @@ public class PublicEventServiceImpl implements PublicEventService {
             throw new NotFoundException(String.format("Object with id=%s was not found", eventId));
         }
         sendHit(servletRequest);
+        EventFullDto eventFullDto = EventMapper.eventToEventFullDto(event);
+        eventFullDto.setConfirmedRequests(requestRepo.countByEventIdAndStatus(eventId, CONFIRMED));
         return null;
     }
 

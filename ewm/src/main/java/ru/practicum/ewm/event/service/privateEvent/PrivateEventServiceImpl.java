@@ -19,6 +19,7 @@ import ru.practicum.ewm.event.repo.EventRepo;
 import ru.practicum.ewm.event.repo.LocationRepo;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.WrongConditionsException;
+import ru.practicum.ewm.requests.repo.RequestRepo;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repo.UserRepo;
 
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.practicum.ewm.event.model.EventState.PUBLISHED;
+import static ru.practicum.ewm.requests.model.StateParticipation.CONFIRMED;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final UserRepo userRepo;
     private final CategoryRepo categoryRepo;
     private final LocationRepo locationRepo;
+    private final RequestRepo requestRepo;
 
     private void checkEventDateIsCorrect(LocalDateTime eventDate) {
         if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
@@ -116,6 +119,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
         event = EventMapper.UpdateEventUser(newEvent, event);
         log.info("Обновлено событие: {}", event);
-        return EventMapper.eventToEventFullDto(event);
+        EventFullDto eventFullDto = EventMapper.eventToEventFullDto(event);
+        eventFullDto.setConfirmedRequests(requestRepo.countByEventIdAndStatus(eventId, CONFIRMED));
+        return eventFullDto;
     }
 }

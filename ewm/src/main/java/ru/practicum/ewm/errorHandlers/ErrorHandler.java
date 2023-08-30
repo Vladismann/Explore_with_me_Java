@@ -50,6 +50,7 @@ public class ErrorHandler {
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 
+    @ExceptionHandler(WrongConditionsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConflict(final WrongConditionsException e) {
         log.info(e.getMessage());

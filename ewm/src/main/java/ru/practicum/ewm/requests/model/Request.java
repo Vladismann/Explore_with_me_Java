@@ -22,7 +22,7 @@ public class Request {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    private User requestor;
+    private User requester;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude

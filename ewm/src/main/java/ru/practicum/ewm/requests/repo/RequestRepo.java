@@ -6,7 +6,7 @@ import ru.practicum.ewm.requests.model.StateParticipation;
 
 public interface RequestRepo extends JpaRepository<Request, Long> {
 
-    Request findByRequestorIdAndEventId(long requesterId, long eventId);
+    Request findByRequesterIdAndEventId(long requesterId, long eventId);
 
     long countByEventIdAndStatus(long eventId, StateParticipation status);
 }

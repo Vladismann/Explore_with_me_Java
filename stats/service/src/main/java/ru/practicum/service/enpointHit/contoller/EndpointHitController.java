@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
+import ru.practicum.dto.EndpointHitDto.EventsAndViewsDto;
 import ru.practicum.dto.EndpointHitDto.GetEndpointHitDto;
 import ru.practicum.dto.EndpointHitDto.GetStatsDto;
 import ru.practicum.service.enpointHit.service.EndpointHitService;
@@ -39,5 +40,11 @@ public class EndpointHitController {
                                       @RequestParam(name = "unique", defaultValue = "false") Boolean unique) {
         log.info(RECEIVED_GET, "stats");
         return endpointHitService.getEndpointHitStats(start, end, uris, unique);
+    }
+
+    @GetMapping("/views")
+    public List<EventsAndViewsDto> getViews(@RequestParam(name = "uris", defaultValue = "") List<String> uris) {
+        log.info(RECEIVED_GET, "/views");
+        return endpointHitService.getEventViews(uris);
     }
 }
