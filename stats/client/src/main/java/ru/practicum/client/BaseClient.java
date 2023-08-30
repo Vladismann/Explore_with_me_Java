@@ -11,9 +11,11 @@ import java.util.Map;
 public class BaseClient {
 
     protected final RestTemplate rest;
+    protected final String serverUrl;
 
-    public BaseClient(RestTemplate rest) {
+    public BaseClient(RestTemplate rest, String serverUrl) {
         this.rest = rest;
+        this.serverUrl = serverUrl;
     }
 
     private static ResponseEntity<Object> prepareResponse(ResponseEntity<Object> response) {
