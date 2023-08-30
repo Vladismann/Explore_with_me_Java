@@ -6,14 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.NewEventDto;
+import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
 import ru.practicum.ewm.event.service.privateEvent.PrivateEventService;
 
 import javax.validation.Valid;
 import java.util.List;
 
 import static ru.practicum.dto.Common.CommonForPaths.BY_ID_PATH;
-import static ru.practicum.dto.Common.Messages.RECEIVED_GET;
-import static ru.practicum.dto.Common.Messages.RECEIVED_POST;
+import static ru.practicum.dto.Common.Messages.*;
 
 @RestController
 @Slf4j
@@ -44,5 +44,13 @@ public class PrivateEventController {
                                      @PathVariable long id) {
         log.info(RECEIVED_GET, "/users/{userId}/events", userId);
         return privateEventService.getUserEvent(userId, id);
+    }
+
+    @PatchMapping(BY_ID_PATH)
+    public EventFullDto getUserEvent(@PathVariable long userId,
+                                     @PathVariable long id,
+                                     @RequestBody UpdateEventUserRequest newEventDto) {
+        log.info(RECEIVED_PATCH, "/users/{userId}/events", userId);
+        return privateEventService.updateEvent(userId, id, newEventDto);
     }
 }

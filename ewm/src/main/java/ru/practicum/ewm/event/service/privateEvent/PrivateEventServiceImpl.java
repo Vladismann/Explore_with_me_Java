@@ -85,6 +85,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         return EventMapper.eventToEventFullDto(event);
     }
 
+    @Override
     public EventFullDto updateEvent(long userId, long eventId, UpdateEventUserRequest newEvent) {
         CommonMethods.checkObjectIsExists(userId, userRepo);
         CommonMethods.checkObjectIsExists(eventId, eventRepo);
