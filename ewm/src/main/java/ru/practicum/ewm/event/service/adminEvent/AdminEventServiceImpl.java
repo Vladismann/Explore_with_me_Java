@@ -10,7 +10,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
 
     @Override
-    public EventFullDto update(Long eventId, UpdateEventUserRequest request) {
+    public EventFullDto updateEvent(Long eventId, UpdateEventUserRequest request) {
         return null;
     }
 

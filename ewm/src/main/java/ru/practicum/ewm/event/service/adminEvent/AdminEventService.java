@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface AdminEventService {
 
-    EventFullDto update(Long eventId, UpdateEventUserRequest request);
+    EventFullDto updateEvent(Long eventId, UpdateEventUserRequest request);
 
     List<EventFullDto> getAll(AdminSearchParameters request);
 }

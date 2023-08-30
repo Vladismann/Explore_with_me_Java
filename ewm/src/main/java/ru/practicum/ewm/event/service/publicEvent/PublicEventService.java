@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PublicEventService {
 
-    EventFullDto get(Long eventId, HttpServletRequest servletRequest);
+    EventFullDto getEvent(Long eventId, HttpServletRequest servletRequest);
 
     List<EventFullDto> getAll(PublicSearchParameters request, HttpServletRequest servletRequest);
 }

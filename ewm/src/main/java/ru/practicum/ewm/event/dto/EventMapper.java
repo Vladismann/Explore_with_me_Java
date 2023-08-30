@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm.event.model.EventState.CANCELED;
-import static ru.practicum.ewm.event.model.EventState.PENDING;
+import static ru.practicum.ewm.event.model.EventState.*;
+import static ru.practicum.ewm.event.model.EventStateAction.PUBLISH_EVENT;
 import static ru.practicum.ewm.event.model.EventStateAction.SEND_TO_REVIEW;
 
 @UtilityClass
@@ -94,7 +94,10 @@ public class EventMapper {
         if (newTitle != null && !newTitle.isBlank()) {
             event.setTitle(updateEvent.getTitle());
         }
-        if (newState.equals(SEND_TO_REVIEW)) {
+
+        if (newState.equals(PUBLISH_EVENT)) {
+            event.setState(PUBLISHED);
+        } else if (newState.equals(SEND_TO_REVIEW)) {
             event.setState(PENDING);
         } else {
             event.setState(CANCELED);
