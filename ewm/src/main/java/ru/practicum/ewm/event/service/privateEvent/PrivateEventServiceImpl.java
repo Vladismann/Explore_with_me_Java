@@ -194,5 +194,4 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         return updatedRequests;
     }
 
-
 }
