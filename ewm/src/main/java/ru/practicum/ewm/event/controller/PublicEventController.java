@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.event.dto.EventFullDto;
+import ru.practicum.ewm.event.dto.search.PublicSearchParameters;
 import ru.practicum.ewm.event.service.publicEvent.PublicEventService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
 
 import static ru.practicum.dto.Common.CommonForPaths.BY_ID_PATH;
 import static ru.practicum.dto.Common.Messages.RECEIVED_GET;
@@ -26,5 +29,12 @@ public class PublicEventController {
     EventFullDto get(@PathVariable Long id, HttpServletRequest request) {
         log.info(RECEIVED_GET, "/events", id);
         return service.getEvent(id, request);
+    }
+
+    @GetMapping
+    List<EventFullDto> getAll(@Valid PublicSearchParameters request,
+                              HttpServletRequest servletRequest) {
+        log.info(RECEIVED_GET, "/events");
+        return service.getAll(request, servletRequest);
     }
 }

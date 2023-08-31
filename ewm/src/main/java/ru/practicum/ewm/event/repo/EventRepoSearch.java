@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMATTER;
-import static ru.practicum.ewm.event.model.EventSort.EVENT_DATE;
+import static ru.practicum.ewm.event.model.EventState.PUBLISHED;
 
 @Repository
 @RequiredArgsConstructor
@@ -64,9 +64,6 @@ public class EventRepoSearch {
         if (parameters.getPaid() != null) {
             criteria = builder.and(criteria, root.get("paid").in(parameters.getPaid()));
         }
-        if (parameters.getOnlyAvailable() != null) {
-            criteria = builder.and(criteria, root.get("participantLimit").in(parameters.getOnlyAvailable()));
-        }
         if (parameters.getRangeStart() != null) {
             criteria = builder.and(criteria, builder.greaterThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class),
                     LocalDateTime.parse(parameters.getRangeStart().format(DEFAULT_DATE_FORMATTER), DEFAULT_DATE_FORMATTER)));
@@ -75,11 +72,12 @@ public class EventRepoSearch {
             criteria = builder.and(criteria, builder.lessThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class),
                     LocalDateTime.parse(parameters.getRangeEnd().format(DEFAULT_DATE_FORMATTER), DEFAULT_DATE_FORMATTER)));
         }
-        if (parameters.getSort().equals(EVENT_DATE)) {
-            query.select(root).where(criteria).orderBy(builder.asc(root.get("eventDate")));
-        } else {
-            query.select(root).where(criteria);
+        if (parameters.getRangeStart() == null && parameters.getRangeEnd() == null) {
+            criteria = builder.and(criteria, builder.greaterThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class),
+                    LocalDateTime.parse(LocalDateTime.now().format(DEFAULT_DATE_FORMATTER), DEFAULT_DATE_FORMATTER)));
         }
+        criteria = builder.and(criteria, root.get("state").in(PUBLISHED));
+        query.select(root).where(criteria);
         return manager.createQuery(query).setFirstResult(parameters.getFrom()).setMaxResults(parameters.getSize()).getResultList();
     }
 }
