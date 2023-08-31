@@ -3,6 +3,9 @@ package ru.practicum.ewm.requests.dto;
 import lombok.experimental.UtilityClass;
 import ru.practicum.ewm.requests.model.Request;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @UtilityClass
 public class RequestMapper {
 
@@ -14,5 +17,9 @@ public class RequestMapper {
                 .requester(request.getRequester().getId())
                 .status(request.getStatus())
                 .build();
+    }
+
+    public static List<ParticipationRequestDto> requestToParticipationRequestDto(List<Request> requests) {
+        return requests.stream().map(RequestMapper::requestToParticipationRequestDto).collect(Collectors.toList());
     }
 }

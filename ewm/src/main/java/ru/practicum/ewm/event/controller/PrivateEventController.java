@@ -8,6 +8,8 @@ import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.NewEventDto;
 import ru.practicum.ewm.event.dto.UpdateEventRequest;
 import ru.practicum.ewm.event.service.privateEvent.PrivateEventService;
+import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.ewm.requests.dto.ParticipationRequestDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -52,5 +54,20 @@ public class PrivateEventController {
                                      @RequestBody UpdateEventRequest newEventDto) {
         log.info(RECEIVED_PATCH, "/users/{userId}/events", userId);
         return privateEventService.updateEvent(userId, id, newEventDto);
+    }
+
+    @GetMapping("/{eventId}/requests")
+    List<ParticipationRequestDto> getAllRequestsByForEvent(@PathVariable Long eventId,
+                                                           @PathVariable Long userId) {
+        log.info(RECEIVED_GET, "/{eventId}/requests", "/users/{userId}/events");
+        return privateEventService.getAllRequestsByEvent(eventId, userId);
+    }
+
+    @PatchMapping("/{eventId}/requests")
+    List<ParticipationRequestDto> updateRequestsForEvent(@PathVariable Long eventId,
+                                                         @PathVariable Long userId,
+                                                         @Valid @RequestBody EventRequestStatusUpdateRequest request) {
+        log.info(RECEIVED_PATCH, "/{eventId}/requests", "/users/{userId}/events");
+        return privateEventService.updateEventRequestsStatus(eventId, userId, request);
     }
 }

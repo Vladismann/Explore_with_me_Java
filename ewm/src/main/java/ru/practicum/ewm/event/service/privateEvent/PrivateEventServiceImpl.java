@@ -19,6 +19,10 @@ import ru.practicum.ewm.event.repo.EventRepo;
 import ru.practicum.ewm.event.repo.LocationRepo;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.WrongConditionsException;
+import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.ewm.requests.dto.ParticipationRequestDto;
+import ru.practicum.ewm.requests.dto.RequestMapper;
+import ru.practicum.ewm.requests.model.Request;
 import ru.practicum.ewm.requests.repo.RequestRepo;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repo.UserRepo;
@@ -73,7 +77,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         if (events.isEmpty()) {
             return List.of();
         }
-        log.info("Запрошен список событий пользователя id={} в размере: {}", userId, events.size());
+        log.info("Запрошен список событий пользователя id={}", userId);
         return EventMapper.eventToEventFullDto(events);
     }
 
@@ -120,4 +124,31 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         log.info("Обновлено событие: {}", event);
         return EventMapper.eventToEventFullDto(event);
     }
+
+    @Override
+    public List<ParticipationRequestDto> getAllRequestsByEvent(Long eventId, Long userId) {
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        CommonMethods.checkObjectIsExists(eventId, eventRepo);
+        Event event = eventRepo.getReferenceById(eventId);
+        if (event.getInitiator().getId() != userId) {
+            throw new NotFoundException(String.format("Object with id=%s was not found", eventId));
+        }
+        List<Request> requests = requestRepo.findAllByEventId(eventId);
+        log.info("Получен список запросов на участие для события с id={}", eventId);
+        return RequestMapper.requestToParticipationRequestDto(requests);
+    }
+
+    @Override
+    public List<ParticipationRequestDto> updateEventRequestsStatus(Long eventId, Long userId, EventRequestStatusUpdateRequest requestsForUpdate) {
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        CommonMethods.checkObjectIsExists(eventId, eventRepo);
+        Event event = eventRepo.getReferenceById(eventId);
+        if (event.getInitiator().getId() != userId) {
+            throw new NotFoundException(String.format("Object with id=%s was not found", eventId));
+        }
+        List<Request> requests = requestRepo.findAllByEventId(eventId);
+        return null;
+    }
+
+
 }

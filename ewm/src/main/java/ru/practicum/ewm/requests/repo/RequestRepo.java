@@ -20,4 +20,8 @@ public interface RequestRepo extends JpaRepository<Request, Long> {
             "GROUP BY eventId",
             nativeQuery = true)
     List<EventsAndRequests> findAllRequestsByEventIds(List<Long> eventIds);
+
+    List<Request> findAllByEventId(long eventId);
+
+    List<Request> findAllByEventIn(List<Long> eventIds);
 }
