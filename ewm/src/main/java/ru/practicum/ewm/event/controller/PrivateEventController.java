@@ -9,6 +9,7 @@ import ru.practicum.ewm.event.dto.NewEventDto;
 import ru.practicum.ewm.event.dto.UpdateEventRequest;
 import ru.practicum.ewm.event.service.privateEvent.PrivateEventService;
 import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.requests.dto.ParticipationRequestDto;
 
 import javax.validation.Valid;
@@ -64,9 +65,9 @@ public class PrivateEventController {
     }
 
     @PatchMapping("/{eventId}/requests")
-    List<ParticipationRequestDto> updateRequestsForEvent(@PathVariable Long eventId,
-                                                         @PathVariable Long userId,
-                                                         @Valid @RequestBody EventRequestStatusUpdateRequest request) {
+    EventRequestStatusUpdateResult updateRequestsForEvent(@PathVariable Long eventId,
+                                                          @PathVariable Long userId,
+                                                          @Valid @RequestBody EventRequestStatusUpdateRequest request) {
         log.info(RECEIVED_PATCH, "/{eventId}/requests", "/users/{userId}/events");
         return privateEventService.updateEventRequestsStatus(eventId, userId, request);
     }

@@ -20,9 +20,11 @@ import ru.practicum.ewm.event.repo.LocationRepo;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.WrongConditionsException;
 import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.requests.dto.ParticipationRequestDto;
 import ru.practicum.ewm.requests.dto.RequestMapper;
 import ru.practicum.ewm.requests.model.Request;
+import ru.practicum.ewm.requests.model.StateParticipation;
 import ru.practicum.ewm.requests.repo.RequestRepo;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repo.UserRepo;
@@ -31,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.practicum.ewm.event.model.EventState.PUBLISHED;
+import static ru.practicum.ewm.requests.model.StateParticipation.*;
 
 @Service
 @RequiredArgsConstructor
@@ -139,15 +142,56 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
-    public List<ParticipationRequestDto> updateEventRequestsStatus(Long eventId, Long userId, EventRequestStatusUpdateRequest requestsForUpdate) {
+    public EventRequestStatusUpdateResult updateEventRequestsStatus(Long eventId, Long userId, EventRequestStatusUpdateRequest requestsForUpdate) {
         CommonMethods.checkObjectIsExists(userId, userRepo);
         CommonMethods.checkObjectIsExists(eventId, eventRepo);
         Event event = eventRepo.getReferenceById(eventId);
+        List<Long> requestIds = requestsForUpdate.getRequestIds();
         if (event.getInitiator().getId() != userId) {
             throw new NotFoundException(String.format("Object with id=%s was not found", eventId));
         }
-        List<Request> requests = requestRepo.findAllByEventId(eventId);
-        return null;
+        long actualLimit = event.getParticipantLimit();
+        if (actualLimit == 0 || !event.getRequestModeration()) {
+            throw new WrongConditionsException("Approval is not required");
+        }
+        long actualConfirmedRequestsNum = requestRepo.countByEventIdAndStatus(eventId, CONFIRMED);
+        if (actualLimit == actualConfirmedRequestsNum) {
+            throw new WrongConditionsException("The participant limit has been reached=" + event.getParticipantLimit());
+        }
+
+        List<Request> requests = requestRepo.findAllByIdIn(requestIds);
+        Request notPendingrequest = requests.stream().filter(request -> !request.getStatus().equals(PENDING)).findFirst().orElse(null);
+        if (notPendingrequest != null) {
+            throw new WrongConditionsException("Incorrect status for approving in request: " + notPendingrequest.getId());
+        }
+        // проверяем, что если заявки одобряются, то лимит не будет превышен
+        StateParticipation newState = requestsForUpdate.getStatus();
+        long newRequestsWithNewConfirmedRequests = actualConfirmedRequestsNum + requestsForUpdate.getRequestIds().size();
+        if (newState.equals(CONFIRMED) && newRequestsWithNewConfirmedRequests > event.getParticipantLimit()) {
+            throw new WrongConditionsException("Free places less than " + requestsForUpdate.getRequestIds().size());
+        }
+
+        EventRequestStatusUpdateResult updatedRequests = new EventRequestStatusUpdateResult();
+        if (newState.equals(CONFIRMED)) {
+            requests.forEach(request -> request.setStatus(CONFIRMED));
+            requestRepo.saveAll(requests);
+            updatedRequests.setConfirmedRequests(RequestMapper.requestToParticipationRequestDto(requests));
+            // отклоняем оставшиеся запросы, которые ожидаю рассмотрения, если лимит достигнут
+            if (actualLimit == newRequestsWithNewConfirmedRequests) {
+                List<Request> leftRequests = requestRepo.findAllByEventIdAndStatusAndIdNotIn(eventId, PENDING, requestIds);
+                leftRequests.forEach(request -> request.setStatus(REJECTED));
+                requestRepo.saveAll(leftRequests);
+                updatedRequests.setRejectedRequests(RequestMapper.requestToParticipationRequestDto(leftRequests));
+            } else {
+                updatedRequests.setRejectedRequests(List.of());
+            }
+        } else {
+            requests.forEach(request -> request.setStatus(REJECTED));
+            requestRepo.saveAll(requests);
+            updatedRequests.setRejectedRequests(RequestMapper.requestToParticipationRequestDto(requests));
+            updatedRequests.setConfirmedRequests(List.of());
+        }
+        return updatedRequests;
     }
 
 

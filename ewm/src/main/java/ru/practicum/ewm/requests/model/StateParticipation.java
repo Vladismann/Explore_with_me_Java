@@ -4,5 +4,5 @@ public enum StateParticipation {
 
     CONFIRMED,
     PENDING,
-    CANCELED
+    REJECTED
 }
