@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventMapper;
-import ru.practicum.ewm.event.dto.EventsAndRequests;
 import ru.practicum.ewm.event.dto.search.PublicSearchParameters;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repo.EventRepo;
@@ -62,10 +61,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     public List<EventFullDto> getAll(PublicSearchParameters request, HttpServletRequest servletRequest) {
         eventServiceCommon.sendHit(servletRequest);
         List<Event> events = eventRepoSearch.findAllForPublic(request);
-        List<Long> eventsIds = events.stream().map(Event::getId).collect(Collectors.toList());
-        List<EventsAndRequests> eventsAndRequests = requestRepo.findAllRequestsByEventIds(eventsIds);
-        Map<Long, Integer> confirmedRequests = eventsAndRequests.stream()
-                .collect(Collectors.toMap(EventsAndRequests::getEventId, EventsAndRequests::getCount));
+        Map<Long, Integer> confirmedRequests = eventServiceCommon.getConfirmedRequests(events);
         if (request.getOnlyAvailable() && !confirmedRequests.isEmpty()) {
             events = events.stream()
                     .filter(event -> confirmedRequests.get(event.getId()) == null || event.getParticipantLimit() != confirmedRequests.get(event.getId()))
@@ -73,16 +69,8 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
         Map<Long, Long> views = eventServiceCommon.getViews(events);
         List<EventFullDto> eventFullDto = EventMapper.eventToEventFullDto(events);
-        if (!views.isEmpty() || !confirmedRequests.isEmpty()) {
-            for (EventFullDto event : eventFullDto) {
-                if (views.get(event.getId()) != null) {
-                    event.setViews(views.get(event.getId()));
-                }
-                if (confirmedRequests.get(event.getId()) != null) {
-                    event.setConfirmedRequests(confirmedRequests.get(event.getId()));
-                }
-            }
-        }
+        eventFullDto = eventServiceCommon.setViewsAndRequestForListEventFullDto(eventFullDto, views, confirmedRequests);
+
         if (request.getSort().equals(VIEWS)) {
             eventFullDto = eventFullDto.stream().sorted(Comparator.comparingLong(EventFullDto::getViews).reversed()).collect(Collectors.toList());
         } else {

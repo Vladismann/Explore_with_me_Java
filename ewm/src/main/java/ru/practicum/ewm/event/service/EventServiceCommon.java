@@ -6,7 +6,10 @@ import org.springframework.stereotype.Service;
 import ru.practicum.client.StatsClient;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
 import ru.practicum.dto.EndpointHitDto.EventsAndViewsDto;
+import ru.practicum.ewm.event.dto.EventFullDto;
+import ru.practicum.ewm.event.dto.EventsAndRequests;
 import ru.practicum.ewm.event.model.Event;
+import ru.practicum.ewm.requests.repo.RequestRepo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class EventServiceCommon {
 
     private final StatsClient stats;
+    private final RequestRepo requestRepo;
 
     public void sendHit(HttpServletRequest servletRequest) {
         AddEndpointHitDto addEndpointHitDto = AddEndpointHitDto.builder()
@@ -41,5 +45,27 @@ public class EventServiceCommon {
         }
         return eventsAndViewsDto.stream()
                 .collect(Collectors.toMap(o -> Long.parseLong(o.getUri().replace("/events/", "")), EventsAndViewsDto::getViews));
+    }
+
+    public Map<Long, Integer> getConfirmedRequests(List<Event> events) {
+        List<Long> eventsIds = events.stream().map(Event::getId).collect(Collectors.toList());
+        List<EventsAndRequests> eventsAndRequests = requestRepo.findAllRequestsByEventIds(eventsIds);
+        return eventsAndRequests.stream()
+                .collect(Collectors.toMap(EventsAndRequests::getEventId, EventsAndRequests::getCount));
+    }
+
+    public List<EventFullDto> setViewsAndRequestForListEventFullDto(List<EventFullDto> eventFullDto, Map<Long, Long> views, Map<Long, Integer> confirmedRequests) {
+        if (!views.isEmpty() || !confirmedRequests.isEmpty()) {
+            for (EventFullDto event : eventFullDto) {
+                if (views.get(event.getId()) != null) {
+                    event.setViews(views.get(event.getId()));
+                }
+                if (confirmedRequests.get(event.getId()) != null) {
+                    event.setConfirmedRequests(confirmedRequests.get(event.getId()));
+                }
+            }
+        }
+        return eventFullDto;
+
     }
 }
