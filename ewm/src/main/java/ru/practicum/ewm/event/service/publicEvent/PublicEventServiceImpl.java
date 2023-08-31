@@ -67,7 +67,9 @@ public class PublicEventServiceImpl implements PublicEventService {
         Map<Long, Integer> confirmedRequests = eventsAndRequests.stream()
                 .collect(Collectors.toMap(EventsAndRequests::getEventId, EventsAndRequests::getCount));
         if (request.getOnlyAvailable() && !confirmedRequests.isEmpty()) {
-            events = events.stream().filter(event -> event.getParticipantLimit() != confirmedRequests.get(event.getId())).collect(Collectors.toList());
+            events = events.stream()
+                    .filter(event -> confirmedRequests.get(event.getId()) == null || event.getParticipantLimit() != confirmedRequests.get(event.getId()))
+                    .collect(Collectors.toList());
         }
         Map<Long, Long> views = eventServiceCommon.getViews(events);
         List<EventFullDto> eventFullDto = EventMapper.eventToEventFullDto(events);
@@ -82,10 +84,11 @@ public class PublicEventServiceImpl implements PublicEventService {
             }
         }
         if (request.getSort().equals(VIEWS)) {
-            eventFullDto = eventFullDto.stream().sorted(Comparator.comparingLong(EventFullDto::getViews)).collect(Collectors.toList());
+            eventFullDto = eventFullDto.stream().sorted(Comparator.comparingLong(EventFullDto::getViews).reversed()).collect(Collectors.toList());
         } else {
-            eventFullDto = eventFullDto.stream().sorted(Comparator.comparing(EventFullDto::getEventDate)).collect(Collectors.toList());
+            eventFullDto = eventFullDto.stream().sorted(Comparator.comparing(EventFullDto::getEventDate).reversed()).collect(Collectors.toList());
         }
+        log.info("Запрошен список событий в размере: {}", eventFullDto.size());
         return eventFullDto;
     }
 }
