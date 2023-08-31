@@ -2,8 +2,8 @@ package ru.practicum.ewm.event.repo;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.practicum.ewm.event.dto.search.AdminSearchParameters;
-import ru.practicum.ewm.event.dto.search.PublicSearchParameters;
+import ru.practicum.ewm.event.dto.search.AdminSearchRequest;
+import ru.practicum.ewm.event.dto.search.PublicSearchRequest;
 import ru.practicum.ewm.event.model.Event;
 
 import javax.persistence.EntityManager;
@@ -23,7 +23,7 @@ public class EventRepoSearch {
 
     private final EntityManager manager;
 
-    public List<Event> findAllForAdmin(AdminSearchParameters parameters) {
+    public List<Event> findAllForAdmin(AdminSearchRequest parameters) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<Event> query = builder.createQuery(Event.class);
         Root<Event> root = query.from(Event.class);
@@ -45,11 +45,11 @@ public class EventRepoSearch {
             criteria = builder.and(criteria, builder.lessThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class),
                     LocalDateTime.parse(parameters.getRangeEnd().format(DEFAULT_DATE_FORMATTER), DEFAULT_DATE_FORMATTER)));
         }
-        query.select(root).where(criteria);
+        query.select(root).where(criteria).orderBy(builder.asc(root.get("id")));
         return manager.createQuery(query).setFirstResult(parameters.getFrom()).setMaxResults(parameters.getSize()).getResultList();
     }
 
-    public List<Event> findAllForPublic(PublicSearchParameters parameters) {
+    public List<Event> findAllForPublic(PublicSearchRequest parameters) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<Event> query = builder.createQuery(Event.class);
         Root<Event> root = query.from(Event.class);

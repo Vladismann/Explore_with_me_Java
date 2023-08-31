@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.NewEventDto;
-import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
+import ru.practicum.ewm.event.dto.UpdateEventRequest;
 import ru.practicum.ewm.event.service.privateEvent.PrivateEventService;
 
 import javax.validation.Valid;
@@ -49,7 +49,7 @@ public class PrivateEventController {
     @PatchMapping(BY_ID_PATH)
     public EventFullDto getUserEvent(@PathVariable long userId,
                                      @PathVariable long id,
-                                     @RequestBody UpdateEventUserRequest newEventDto) {
+                                     @RequestBody UpdateEventRequest newEventDto) {
         log.info(RECEIVED_PATCH, "/users/{userId}/events", userId);
         return privateEventService.updateEvent(userId, id, newEventDto);
     }

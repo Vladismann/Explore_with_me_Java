@@ -12,7 +12,7 @@ import ru.practicum.ewm.common.CustomPageRequest;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventMapper;
 import ru.practicum.ewm.event.dto.NewEventDto;
-import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
+import ru.practicum.ewm.event.dto.UpdateEventRequest;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.Location;
 import ru.practicum.ewm.event.repo.EventRepo;
@@ -27,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.practicum.ewm.event.model.EventState.PUBLISHED;
-import static ru.practicum.ewm.requests.model.StateParticipation.CONFIRMED;
 
 @Service
 @RequiredArgsConstructor
@@ -89,7 +88,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     @Override
-    public EventFullDto updateEvent(long userId, long eventId, UpdateEventUserRequest newEvent) {
+    public EventFullDto updateEvent(long userId, long eventId, UpdateEventRequest newEvent) {
         CommonMethods.checkObjectIsExists(userId, userRepo);
         CommonMethods.checkObjectIsExists(eventId, eventRepo);
         Event event = eventRepo.getReferenceById(eventId);
@@ -119,8 +118,6 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
         event = EventMapper.UpdateEventUser(newEvent, event);
         log.info("Обновлено событие: {}", event);
-        EventFullDto eventFullDto = EventMapper.eventToEventFullDto(event);
-        eventFullDto.setConfirmedRequests(requestRepo.countByEventIdAndStatus(eventId, CONFIRMED));
-        return eventFullDto;
+        return EventMapper.eventToEventFullDto(event);
     }
 }

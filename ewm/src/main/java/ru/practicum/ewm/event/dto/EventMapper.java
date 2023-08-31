@@ -63,7 +63,7 @@ public class EventMapper {
         return event.stream().map(EventMapper::eventToEventFullDto).collect(Collectors.toList());
     }
 
-    public Event UpdateEventUser(UpdateEventUserRequest updateEvent, Event event) {
+    public Event UpdateEventUser(UpdateEventRequest updateEvent, Event event) {
         String newAnnotation = updateEvent.getAnnotation();
         String newDescription = updateEvent.getDescription();
         LocalDateTime newEventDate = updateEvent.getEventDate();

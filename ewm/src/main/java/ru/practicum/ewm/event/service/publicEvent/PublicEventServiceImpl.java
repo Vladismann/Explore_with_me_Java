@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventMapper;
-import ru.practicum.ewm.event.dto.search.PublicSearchParameters;
+import ru.practicum.ewm.event.dto.search.PublicSearchRequest;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repo.EventRepo;
 import ru.practicum.ewm.event.repo.EventRepoSearch;
@@ -58,7 +58,7 @@ public class PublicEventServiceImpl implements PublicEventService {
     }
 
     @Override
-    public List<EventFullDto> getAll(PublicSearchParameters request, HttpServletRequest servletRequest) {
+    public List<EventFullDto> getAll(PublicSearchRequest request, HttpServletRequest servletRequest) {
         eventServiceCommon.sendHit(servletRequest);
         List<Event> events = eventRepoSearch.findAllForPublic(request);
         Map<Long, Integer> confirmedRequests = eventServiceCommon.getConfirmedRequests(events);

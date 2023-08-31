@@ -15,7 +15,7 @@ import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMAT;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateEventUserRequest {
+public class UpdateEventRequest {
 
     private String annotation;
 

@@ -1,14 +1,14 @@
 package ru.practicum.ewm.event.service.adminEvent;
 
 import ru.practicum.ewm.event.dto.EventFullDto;
-import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
-import ru.practicum.ewm.event.dto.search.AdminSearchParameters;
+import ru.practicum.ewm.event.dto.UpdateEventRequest;
+import ru.practicum.ewm.event.dto.search.AdminSearchRequest;
 
 import java.util.List;
 
 public interface AdminEventService {
 
-    EventFullDto updateEvent(Long eventId, UpdateEventUserRequest request);
+    EventFullDto updateEvent(Long eventId, UpdateEventRequest request);
 
-    List<EventFullDto> getAll(AdminSearchParameters request);
+    List<EventFullDto> getAll(AdminSearchRequest request);
 }
