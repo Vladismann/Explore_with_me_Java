@@ -34,7 +34,7 @@ public class UpdateEventRequest {
 
     private Boolean requestModeration;
 
-    EventStateAction stateAction;
+    private EventStateAction stateAction;
 
     private String title;
 }

@@ -26,10 +26,10 @@ public class Request {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
-    Event event;
+    private Event event;
 
     @Enumerated(EnumType.STRING)
-    StateParticipation status;
+    private StateParticipation status;
 
     private LocalDateTime created;
 }
