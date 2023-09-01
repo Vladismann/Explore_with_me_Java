@@ -75,7 +75,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         Map<Long, Integer> confirmedRequests = eventServiceCommon.getConfirmedRequests(events);
         Map<Long, Long> views = eventServiceCommon.getViews(events);
         List<EventFullDto> eventFullDto = EventMapper.eventToEventFullDto(events);
-        eventFullDto = eventServiceCommon.setViewsAndRequestForListEventFullDto(eventFullDto, views, confirmedRequests);
+        eventFullDto = EventMapper.setViewsAndRequestForListEventFullDto(eventFullDto, views, confirmedRequests);
         log.info("Запрошен список событий в размере: {}", eventFullDto.size());
         return eventFullDto;
     }

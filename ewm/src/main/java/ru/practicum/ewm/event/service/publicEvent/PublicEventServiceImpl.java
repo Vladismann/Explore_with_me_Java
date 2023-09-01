@@ -69,7 +69,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         }
         Map<Long, Long> views = eventServiceCommon.getViews(events);
         List<EventFullDto> eventFullDto = EventMapper.eventToEventFullDto(events);
-        eventFullDto = eventServiceCommon.setViewsAndRequestForListEventFullDto(eventFullDto, views, confirmedRequests);
+        eventFullDto = EventMapper.setViewsAndRequestForListEventFullDto(eventFullDto, views, confirmedRequests);
 
         if (request.getSort().equals(VIEWS)) {
             eventFullDto = eventFullDto.stream().sorted(Comparator.comparingLong(EventFullDto::getViews).reversed()).collect(Collectors.toList());

@@ -11,6 +11,7 @@ import ru.practicum.ewm.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.practicum.ewm.event.model.EventState.*;
@@ -63,6 +64,20 @@ public class EventMapper {
         return event.stream().map(EventMapper::eventToEventFullDto).collect(Collectors.toList());
     }
 
+    public List<EventFullDto> setViewsAndRequestForListEventFullDto(List<EventFullDto> eventFullDto, Map<Long, Long> views, Map<Long, Integer> confirmedRequests) {
+        if (!views.isEmpty() || !confirmedRequests.isEmpty()) {
+            for (EventFullDto event : eventFullDto) {
+                if (views.get(event.getId()) != null) {
+                    event.setViews(views.get(event.getId()));
+                }
+                if (confirmedRequests.get(event.getId()) != null) {
+                    event.setConfirmedRequests(confirmedRequests.get(event.getId()));
+                }
+            }
+        }
+        return eventFullDto;
+    }
+
     public Event UpdateEventUser(UpdateEventRequest updateEvent, Event event) {
         String newAnnotation = updateEvent.getAnnotation();
         String newDescription = updateEvent.getDescription();
@@ -103,5 +118,32 @@ public class EventMapper {
             event.setState(CANCELED);
         }
         return event;
+    }
+
+    public EventShortDto eventToEventShortDto(Event event, Map<Long, Integer> confirmedRequests, Map<Long, Long> views) {
+        long eventId = event.getId();
+        int eventConfirmedRequests = 0;
+        long eventViews = 0;
+        if (confirmedRequests.get(eventId) != null) {
+            eventConfirmedRequests = confirmedRequests.get(eventId);
+        }
+        if (views.get(eventId) != null) {
+            eventViews = views.get(eventId);
+        }
+        return EventShortDto.builder()
+                .annotation(event.getAnnotation())
+                .category(new CategoryDto(event.getCategory().getId(), event.getCategory().getName()))
+                .confirmedRequests(eventConfirmedRequests)
+                .eventDate(event.getEventDate())
+                .id(eventId)
+                .initiator(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()))
+                .paid(event.getPaid())
+                .title(event.getTitle())
+                .views(eventViews)
+                .build();
+    }
+
+    public List<EventShortDto> eventToEventShortDto(List<Event> events, Map<Long, Integer> confirmedRequests, Map<Long, Long> views) {
+        return events.stream().map(event -> eventToEventShortDto(event, confirmedRequests, views)).collect(Collectors.toList());
     }
 }

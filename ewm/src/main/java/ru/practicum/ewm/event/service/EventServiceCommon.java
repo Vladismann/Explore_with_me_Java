@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.client.StatsClient;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
 import ru.practicum.dto.EndpointHitDto.EventsAndViewsDto;
-import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.EventsAndRequests;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.requests.repo.RequestRepo;
@@ -54,18 +53,4 @@ public class EventServiceCommon {
                 .collect(Collectors.toMap(EventsAndRequests::getEventId, EventsAndRequests::getCount));
     }
 
-    public List<EventFullDto> setViewsAndRequestForListEventFullDto(List<EventFullDto> eventFullDto, Map<Long, Long> views, Map<Long, Integer> confirmedRequests) {
-        if (!views.isEmpty() || !confirmedRequests.isEmpty()) {
-            for (EventFullDto event : eventFullDto) {
-                if (views.get(event.getId()) != null) {
-                    event.setViews(views.get(event.getId()));
-                }
-                if (confirmedRequests.get(event.getId()) != null) {
-                    event.setConfirmedRequests(confirmedRequests.get(event.getId()));
-                }
-            }
-        }
-        return eventFullDto;
-
-    }
 }
