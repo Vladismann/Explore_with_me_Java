@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 public class CompilationMapper {
 
     public Compilation newCompilationDtoToCompilation(NewCompilationDto newCompilationDto, List<Event> events) {
-        return Compilation.builder().
-                title(newCompilationDto.getTitle())
+        return Compilation.builder()
+                .title(newCompilationDto.getTitle())
                 .pinned(newCompilationDto.isPinned())
                 .events(events)
                 .build();
