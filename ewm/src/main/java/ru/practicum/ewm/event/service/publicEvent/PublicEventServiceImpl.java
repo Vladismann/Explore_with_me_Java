@@ -59,6 +59,9 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     @Override
     public List<EventFullDto> getAll(PublicSearchRequest request, HttpServletRequest servletRequest) {
+        if (request.getRangeEnd().isBefore(request.getRangeStart())) {
+            throw new IllegalArgumentException("The range end most be greater or equals the range start");
+        }
         eventServiceCommon.sendHit(servletRequest);
         List<Event> events = eventRepoSearch.findAllForPublic(request);
         if (events.isEmpty()) {

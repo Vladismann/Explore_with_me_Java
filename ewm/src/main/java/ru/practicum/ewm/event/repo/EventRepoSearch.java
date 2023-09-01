@@ -28,14 +28,20 @@ public class EventRepoSearch {
         CriteriaQuery<Event> query = builder.createQuery(Event.class);
         Root<Event> root = query.from(Event.class);
         Predicate criteria = builder.conjunction();
-        if (parameters.getUsers() != null && !parameters.getUsers().isEmpty()) {
-            criteria = builder.and(criteria, root.get("initiator").in(parameters.getUsers()));
+        if (parameters.getUsers() != null) {
+            parameters.getUsers().remove((long) 0);
+            if (!parameters.getUsers().isEmpty()) {
+                criteria = builder.and(criteria, root.get("initiator").in(parameters.getUsers()));
+            }
         }
         if (parameters.getStates() != null && !parameters.getStates().isEmpty()) {
             criteria = builder.and(criteria, root.get("state").in(parameters.getStates()));
         }
         if (parameters.getCategories() != null && !parameters.getCategories().isEmpty()) {
-            criteria = builder.and(criteria, root.get("category").in(parameters.getCategories()));
+            parameters.getCategories().remove((long) 0);
+            if (!parameters.getCategories().isEmpty()) {
+                criteria = builder.and(criteria, root.get("category").in(parameters.getCategories()));
+            }
         }
         if (parameters.getRangeStart() != null) {
             criteria = builder.and(criteria, builder.greaterThanOrEqualTo(root.get("eventDate").as(LocalDateTime.class),
