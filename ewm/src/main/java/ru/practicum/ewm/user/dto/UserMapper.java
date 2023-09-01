@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class UserMapper {
 
-    public User NewUserRequestToUser(NewUserRequest newUserRequest) {
+    public User newUserRequestToUser(NewUserRequest newUserRequest) {
         return User.builder()
                 .email(newUserRequest.getEmail())
                 .name(newUserRequest.getName())

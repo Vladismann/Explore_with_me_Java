@@ -63,7 +63,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             locationRepo.save(location);
             event.setLocation(location);
         }
-        event = EventMapper.UpdateEventUser(newEvent, event);
+        event = EventMapper.updateEventUser(newEvent, event);
         log.info("Обновлено событие: {}", event);
         return EventMapper.eventToEventFullDto(event);
     }

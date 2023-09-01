@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(NewUserRequest dto) {
-        User user = userRepo.save(UserMapper.NewUserRequestToUser(dto));
+        User user = userRepo.save(UserMapper.newUserRequestToUser(dto));
         log.info("Пользователь зарегистрирован: {}", user);
         return UserMapper.userToUserDto(user);
     }

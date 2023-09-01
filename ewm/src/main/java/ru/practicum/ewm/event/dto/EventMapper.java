@@ -78,7 +78,7 @@ public class EventMapper {
         return eventFullDto;
     }
 
-    public Event UpdateEventUser(UpdateEventRequest updateEvent, Event event) {
+    public Event updateEventUser(UpdateEventRequest updateEvent, Event event) {
         String newAnnotation = updateEvent.getAnnotation();
         String newDescription = updateEvent.getDescription();
         LocalDateTime newEventDate = updateEvent.getEventDate();
