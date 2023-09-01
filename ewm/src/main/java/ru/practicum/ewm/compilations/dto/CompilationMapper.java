@@ -28,4 +28,14 @@ public class CompilationMapper {
                 .title(compilation.getTitle())
                 .build();
     }
+
+    public Compilation updateCompilation(UpdateCompilationRequest newCompilationDto, Compilation compilation) {
+        if (newCompilationDto.getPinned() != null) {
+            compilation.setPinned(newCompilationDto.getPinned());
+        }
+        if (newCompilationDto.getTitle() != null && !newCompilationDto.getTitle().isBlank()) {
+            compilation.setTitle(newCompilationDto.getTitle());
+        }
+        return compilation;
+    }
 }

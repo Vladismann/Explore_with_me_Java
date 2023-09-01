@@ -36,7 +36,7 @@ public class AdminCompilationController {
         return service.update(id, request);
     }
 
-    @DeleteMapping("/{BY_ID_PATH}")
+    @DeleteMapping(BY_ID_PATH)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(@PathVariable Long id) {
         log.info(RECEIVED_DELETE, "/admin/compilations", id);

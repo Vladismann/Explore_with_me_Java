@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.compilations.dto.CompilationDto;
 import ru.practicum.ewm.compilations.dto.CompilationMapper;
 import ru.practicum.ewm.compilations.dto.NewCompilationDto;
@@ -21,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class CompilationRequestServiceImpl implements CompilationService {
+public class CompilationServiceImpl implements CompilationService {
 
     private final CompilationRepo compilationRepository;
     private final EventRepo eventRepository;
@@ -39,13 +40,29 @@ public class CompilationRequestServiceImpl implements CompilationService {
     }
 
     @Override
-    public CompilationDto update(Long compilationId, UpdateCompilationRequest request) {
-        return null;
+    public CompilationDto update(Long compilationId, UpdateCompilationRequest updateCompilationRequest) {
+        CommonMethods.checkObjectIsExists(compilationId, compilationRepository);
+        Compilation compilation = compilationRepository.getReferenceById(compilationId);
+        List<Long> newEventsIds = updateCompilationRequest.getEvents();
+        if (newEventsIds != null) {
+            List<Event> newEvents = eventRepository.findAllById(newEventsIds);
+            if (!newEvents.isEmpty() && !compilation.getEvents().equals(newEvents)) {
+                compilation.setEvents(newEvents);
+            }
+        }
+        compilation = CompilationMapper.updateCompilation(updateCompilationRequest, compilation);
+        compilation = compilationRepository.save(compilation);
+        log.info("Обновлена подборка: {}", compilation);
+        Map<Long, Integer> confirmedRequests = eventServiceCommon.getConfirmedRequests(compilation.getEvents());
+        Map<Long, Long> views = eventServiceCommon.getViews(compilation.getEvents());
+        return CompilationMapper.compilationToCompilationDto(compilation, confirmedRequests, views);
     }
 
     @Override
     public void delete(long compilationId) {
-
+        CommonMethods.checkObjectIsExists(compilationId, compilationRepository);
+        compilationRepository.deleteById(compilationId);
+        log.info("Создана удалена: {}", compilationId);
     }
 
     @Override

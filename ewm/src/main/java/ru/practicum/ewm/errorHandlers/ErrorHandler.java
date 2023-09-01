@@ -60,9 +60,9 @@ public class ErrorHandler {
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 
-    @ExceptionHandler({RuntimeException.class})
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleValidation(final RuntimeException e) {
+    public ApiError handleValidation(final Exception e) {
         log.info(e.getMessage());
         return new ApiError(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 INCORRECT_DATA,
@@ -70,9 +70,9 @@ public class ErrorHandler {
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({Error.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handleServerError(final Exception e) {
+    public ApiError handleServerError(final Error e) {
         log.info(e.getMessage());
         return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 INCORRECT_DATA,
