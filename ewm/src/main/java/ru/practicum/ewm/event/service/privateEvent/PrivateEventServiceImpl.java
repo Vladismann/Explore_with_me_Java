@@ -164,9 +164,9 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         if (notPendingrequest != null) {
             throw new WrongConditionsException("Incorrect status for approving in request: " + notPendingrequest.getId());
         }
-        // проверяем, что если заявки одобряются, то лимит не будет превышен
+        // проверяем, что если заявки одобряются, то лимит не будет превышен, по одобряемым отталкиваемся от requests.size(), а не requestsForUpdate
         StateParticipation newState = requestsForUpdate.getStatus();
-        long newRequestsWithNewConfirmedRequests = actualConfirmedRequestsNum + requestsForUpdate.getRequestIds().size();
+        long newRequestsWithNewConfirmedRequests = actualConfirmedRequestsNum + requests.size();
         if (newState.equals(CONFIRMED) && newRequestsWithNewConfirmedRequests > event.getParticipantLimit()) {
             throw new WrongConditionsException("Free places less than " + requestsForUpdate.getRequestIds().size());
         }

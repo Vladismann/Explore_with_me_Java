@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repo.EventRepo;
+import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.WrongConditionsException;
 import ru.practicum.ewm.requests.dto.ParticipationRequestDto;
 import ru.practicum.ewm.requests.dto.RequestMapper;
@@ -19,8 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.practicum.ewm.event.model.EventState.PUBLISHED;
-import static ru.practicum.ewm.requests.model.StateParticipation.CONFIRMED;
-import static ru.practicum.ewm.requests.model.StateParticipation.PENDING;
+import static ru.practicum.ewm.requests.model.StateParticipation.*;
 
 @Service
 @RequiredArgsConstructor
@@ -66,11 +66,27 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto updateRequest(Long userId, Long requestId) {
-        return null;
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        CommonMethods.checkObjectIsExists(requestId, requestRepo);
+        Request request = requestRepo.getReferenceById(requestId);
+        if (request.getRequester().getId() != userId) {
+            throw new NotFoundException(String.format("Object with id=%s was not found", requestId));
+        }
+        if (request.getStatus().equals(REJECTED)) {
+            throw new WrongConditionsException("Reject is not required");
+        }
+        request.setStatus(REJECTED);
+        requestRepo.save(request);
+        log.info("Отменен запрос на участие: {}", requestId);
+        return RequestMapper.requestToParticipationRequestDto(request);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ParticipationRequestDto> getAll(Long userId) {
-        return null;
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        List<Request> requests = requestRepo.findAllByRequesterId(userId);
+        log.info("Получен список запросов пользователя с id={}", userId);
+        return RequestMapper.requestToParticipationRequestDto(requests);
     }
 }
