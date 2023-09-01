@@ -38,7 +38,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto updateEvent(Long eventId, UpdateEventRequest newEvent) {
-        if (newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+        if (newEvent.getEventDate() != null && newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
             throw new WrongConditionsException(
                     String.format("Field: eventDate. Error: Дата начала изменяемого события должна быть не ранее чем за час от даты публикации. Value: %S", newEvent.getEventDate()));
         }
@@ -47,21 +47,25 @@ public class AdminEventServiceImpl implements AdminEventService {
         if (!event.getState().equals(EventState.PENDING)) {
             throw new WrongConditionsException("Cannot publish the event because it's not in the right state: PUBLISHED");
         }
-        long newCategoryId = newEvent.getCategory();
-        if (newCategoryId != event.getCategory().getId() && newCategoryId != 0) {
-            CommonMethods.checkObjectIsExists(newCategoryId, categoryRepo);
-            Category category = categoryRepo.getReferenceById(newCategoryId);
-            event.setCategory(category);
+        if (newEvent.getCategory() != null) {
+            long newCategoryId = newEvent.getCategory();
+            if (newCategoryId != event.getCategory().getId() && newCategoryId != 0) {
+                CommonMethods.checkObjectIsExists(newCategoryId, categoryRepo);
+                Category category = categoryRepo.getReferenceById(newCategoryId);
+                event.setCategory(category);
+            }
         }
 
-        Location location = event.getLocation();
-        float newLat = newEvent.getLocation().getLat();
-        float newLon = newEvent.getLocation().getLon();
-        if (location.getLat() != newLat || location.getLon() != newLon) {
-            location.setLat(newLat);
-            location.setLon(newLon);
-            locationRepo.save(location);
-            event.setLocation(location);
+        if (newEvent.getLocation() != null) {
+            Location location = event.getLocation();
+            float newLat = newEvent.getLocation().getLat();
+            float newLon = newEvent.getLocation().getLon();
+            if (location.getLat() != newLat || location.getLon() != newLon) {
+                location.setLat(newLat);
+                location.setLon(newLon);
+                locationRepo.save(location);
+                event.setLocation(location);
+            }
         }
         event = EventMapper.updateEventUser(newEvent, event);
         log.info("Обновлено событие: {}", event);

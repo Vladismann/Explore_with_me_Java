@@ -63,7 +63,7 @@ public class ErrorHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidation(final Exception e) {
-        log.info(e.getMessage());
+        log.error(e.getStackTrace()[0].toString() + " " + e.getMessage());
         return new ApiError(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 INCORRECT_DATA,
                 e.getMessage(),
@@ -73,7 +73,7 @@ public class ErrorHandler {
     @ExceptionHandler({Error.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleServerError(final Error e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 INCORRECT_DATA,
                 e.getMessage(),

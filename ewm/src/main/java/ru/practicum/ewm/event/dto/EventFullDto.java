@@ -19,6 +19,8 @@ import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMAT;
 @Builder
 public class EventFullDto {
 
+    private Long id;
+
     private String annotation;
 
     private CategoryDto category;
@@ -32,8 +34,6 @@ public class EventFullDto {
 
     @JsonFormat(pattern = DEFAULT_DATE_FORMAT)
     private LocalDateTime eventDate;
-
-    private Long id;
 
     private UserShortDto initiator;
 

@@ -17,10 +17,10 @@ import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMAT;
 @Builder
 public class ParticipationRequestDto {
 
+    private Long id;
     @JsonFormat(pattern = DEFAULT_DATE_FORMAT)
     private LocalDateTime created;
     private Long event;
-    private Long id;
     private Long requester;
     private StateParticipation status;
 
