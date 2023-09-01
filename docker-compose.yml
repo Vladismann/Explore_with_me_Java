@@ -30,6 +30,11 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
+    environment:
+      - EWM_SERVER_URL=http://server:9090
+      - EWM_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
+      - POSTGRES_EWM_USER=postgres
+      - POSTGRES_EWM_PASSWORD=postgres
 
   ewm-db:
     image: postgres:15.1-alpine
@@ -38,6 +43,5 @@ services:
       - "6542:5432"
     environment:
       - POSTGRES_DB=ewm
-      - POSTGRES_EWM_USER=postgres
-      - POSTGRES_EWM_PASSWORD=postgres
-      - EWM_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
