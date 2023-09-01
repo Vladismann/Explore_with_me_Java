@@ -72,6 +72,9 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public List<EventFullDto> getAll(AdminSearchRequest request) {
         List<Event> events = eventRepoSearch.findAllForAdmin(request);
+        if (events.isEmpty()) {
+            return List.of();
+        }
         Map<Long, Integer> confirmedRequests = eventServiceCommon.getConfirmedRequests(events);
         Map<Long, Long> views = eventServiceCommon.getViews(events);
         List<EventFullDto> eventFullDto = EventMapper.eventToEventFullDto(events);

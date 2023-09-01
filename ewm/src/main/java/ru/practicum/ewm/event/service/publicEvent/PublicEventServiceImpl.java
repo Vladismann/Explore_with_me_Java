@@ -61,6 +61,9 @@ public class PublicEventServiceImpl implements PublicEventService {
     public List<EventFullDto> getAll(PublicSearchRequest request, HttpServletRequest servletRequest) {
         eventServiceCommon.sendHit(servletRequest);
         List<Event> events = eventRepoSearch.findAllForPublic(request);
+        if (events.isEmpty()) {
+            return List.of();
+        }
         Map<Long, Integer> confirmedRequests = eventServiceCommon.getConfirmedRequests(events);
         if (request.getOnlyAvailable() && !confirmedRequests.isEmpty()) {
             events = events.stream()

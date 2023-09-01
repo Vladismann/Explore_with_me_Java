@@ -8,6 +8,7 @@ import ru.practicum.ewm.event.model.Event;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class CompilationMapper {
@@ -27,6 +28,10 @@ public class CompilationMapper {
                 .pinned(compilation.isPinned())
                 .title(compilation.getTitle())
                 .build();
+    }
+
+    public List<CompilationDto> compilationToCompilationDto(List<Compilation> compilations, Map<Long, Integer> confirmedRequests, Map<Long, Long> views) {
+        return compilations.stream().map(compilation -> CompilationMapper.compilationToCompilationDto(compilation, confirmedRequests, views)).collect(Collectors.toList());
     }
 
     public Compilation updateCompilation(UpdateCompilationRequest newCompilationDto, Compilation compilation) {
