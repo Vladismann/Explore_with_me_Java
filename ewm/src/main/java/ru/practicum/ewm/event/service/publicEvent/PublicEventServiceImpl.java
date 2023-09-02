@@ -59,7 +59,7 @@ public class PublicEventServiceImpl implements PublicEventService {
 
     @Override
     public List<EventFullDto> getAll(PublicSearchRequest request, HttpServletRequest servletRequest) {
-        if (request.getRangeEnd().isBefore(request.getRangeStart())) {
+        if (request.getRangeEnd() != null && request.getRangeEnd().isBefore(request.getRangeStart())) {
             throw new IllegalArgumentException("The range end most be greater or equals the range start");
         }
         eventServiceCommon.sendHit(servletRequest);
@@ -68,7 +68,8 @@ public class PublicEventServiceImpl implements PublicEventService {
             return List.of();
         }
         Map<Long, Integer> confirmedRequests = eventServiceCommon.getConfirmedRequests(events);
-        if (request.getOnlyAvailable() && !confirmedRequests.isEmpty()) {
+
+        if (request.getOnlyAvailable() != null && request.getOnlyAvailable() && !confirmedRequests.isEmpty()) {
             events = events.stream()
                     .filter(event -> confirmedRequests.get(event.getId()) == null || event.getParticipantLimit() != confirmedRequests.get(event.getId()))
                     .collect(Collectors.toList());
@@ -77,7 +78,7 @@ public class PublicEventServiceImpl implements PublicEventService {
         List<EventFullDto> eventFullDto = EventMapper.eventToEventFullDto(events);
         eventFullDto = EventMapper.setViewsAndRequestForListEventFullDto(eventFullDto, views, confirmedRequests);
 
-        if (request.getSort().equals(VIEWS)) {
+        if (request.getSort() != null && request.getSort().equals(VIEWS)) {
             eventFullDto = eventFullDto.stream().sorted(Comparator.comparingLong(EventFullDto::getViews).reversed()).collect(Collectors.toList());
         } else {
             eventFullDto = eventFullDto.stream().sorted(Comparator.comparing(EventFullDto::getEventDate).reversed()).collect(Collectors.toList());

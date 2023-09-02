@@ -39,7 +39,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public EventFullDto updateEvent(Long eventId, UpdateEventRequest newEvent) {
         if (newEvent.getEventDate() != null && newEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-            throw new WrongConditionsException(
+            throw new IllegalArgumentException(
                     String.format("Field: eventDate. Error: Дата начала изменяемого события должна быть не ранее чем за час от даты публикации. Value: %S", newEvent.getEventDate()));
         }
         CommonMethods.checkObjectIsExists(eventId, eventRepo);

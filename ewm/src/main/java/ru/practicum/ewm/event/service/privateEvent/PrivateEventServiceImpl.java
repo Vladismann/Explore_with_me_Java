@@ -49,7 +49,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
 
     private void checkEventDateIsCorrect(LocalDateTime eventDate) {
         if (eventDate != null && eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new WrongConditionsException(
+            throw new IllegalArgumentException(
                     String.format("Field: eventDate. Error: Дата должна быть больше текущей на 2ч. Value: %S", eventDate));
         }
     }
@@ -60,6 +60,9 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         long categoryId = newEventDto.getCategory();
         CommonMethods.checkObjectIsExists(categoryId, categoryRepo);
         checkEventDateIsCorrect(newEventDto.getEventDate());
+        if (newEventDto.getRequestModeration() == null) {
+            newEventDto.setRequestModeration(true);
+        }
 
         Category category = categoryRepo.getReferenceById(categoryId);
         User user = userRepo.getReferenceById(userId);

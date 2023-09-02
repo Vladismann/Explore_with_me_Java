@@ -42,7 +42,7 @@ public class NewEventDto {
 
     private boolean paid;
 
-    private boolean requestModeration;
+    private Boolean requestModeration;
 
     @NotBlank
     @Size(min = 3, max = 120)

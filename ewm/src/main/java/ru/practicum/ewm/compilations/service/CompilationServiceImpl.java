@@ -33,7 +33,10 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto create(NewCompilationDto newCompilationDto) {
-        List<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
+        List<Event> events = List.of();
+        if (newCompilationDto.getEvents() != null && !newCompilationDto.getEvents().isEmpty()) {
+            events = eventRepository.findAllById(newCompilationDto.getEvents());
+        }
         Compilation compilation = CompilationMapper.newCompilationDtoToCompilation(newCompilationDto, events);
         compilation = compilationRepository.save(compilation);
         log.info("Создана подборка: {}", compilation);

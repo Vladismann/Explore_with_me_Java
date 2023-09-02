@@ -37,7 +37,7 @@ public class EventMapper {
                 .createdOn(LocalDateTime.now())
                 .eventDate(newEventDto.getEventDate())
                 .paid(newEventDto.isPaid())
-                .requestModeration(newEventDto.isRequestModeration())
+                .requestModeration(newEventDto.getRequestModeration())
                 .state(PENDING)
                 .build();
     }
@@ -110,12 +110,14 @@ public class EventMapper {
             event.setTitle(updateEvent.getTitle());
         }
 
-        if (newState.equals(PUBLISH_EVENT)) {
-            event.setState(PUBLISHED);
-        } else if (newState.equals(SEND_TO_REVIEW)) {
-            event.setState(PENDING);
-        } else {
-            event.setState(CANCELED);
+        if (newState != null) {
+            if (newState.equals(PUBLISH_EVENT)) {
+                event.setState(PUBLISHED);
+            } else if (newState.equals(SEND_TO_REVIEW)) {
+                event.setState(PENDING);
+            } else {
+                event.setState(CANCELED);
+            }
         }
         return event;
     }

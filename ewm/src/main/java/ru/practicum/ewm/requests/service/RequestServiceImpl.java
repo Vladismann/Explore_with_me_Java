@@ -46,14 +46,16 @@ public class RequestServiceImpl implements RequestService {
         if (!event.getState().equals(PUBLISHED)) {
             throw new WrongConditionsException("The event not published.");
         }
-        if (event.getParticipantLimit() == requestRepo.countByEventIdAndStatus(eventId, CONFIRMED)) {
-            throw new WrongConditionsException("Limit of Participant =" + event.getParticipantLimit());
+        if (event.getParticipantLimit() != 0) {
+            if (event.getParticipantLimit() == requestRepo.countByEventIdAndStatus(eventId, CONFIRMED)) {
+                throw new WrongConditionsException("Limit of Participant =" + event.getParticipantLimit());
+            }
         }
         User user = userRepo.getReferenceById(userId);
         Request request = new Request();
         request.setRequester(user);
         request.setEvent(event);
-        if (!event.getRequestModeration()) {
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             request.setStatus(CONFIRMED);
         } else {
             request.setStatus(PENDING);

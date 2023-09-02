@@ -66,7 +66,7 @@ public class ErrorHandler {
         log.error(e.getStackTrace()[0].toString() + " " + e.getMessage());
         return new ApiError(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 INCORRECT_DATA,
-                e.getMessage(),
+                e.getStackTrace()[0].getMethodName() + ". Line: " + e.getStackTrace()[0].getLineNumber() + " " + e.getMessage(),
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 

@@ -29,7 +29,7 @@ public interface EndpointHitRepo extends JpaRepository<EndpointHit, Long> {
             "ORDER BY hits desc")
     List<GetStatsDto> findAllByTimestampBetweenAndUrisIn(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("uris") List<String> uris);
 
-    @Query("SELECT new ru.practicum.dto.EndpointHitDto.EventsAndViewsDto(h.uri, count(h.uri) as views) " +
+    @Query("SELECT new ru.practicum.dto.EndpointHitDto.EventsAndViewsDto(h.uri, count(distinct(h.ip)) as views) " +
             "from EndpointHit h " +
             "WHERE h.uri IN (:uris) " +
             "GROUP BY h.uri " +
