@@ -8,7 +8,6 @@ services:
     depends_on:
       - stats-db
     environment:
-      - STATS_SERVER_URL=http://server:9090
       - STATS_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
       - POSTGRES_STATS_USER=postgres
       - POSTGRES_STATS_PASSWORD=postgres
@@ -31,7 +30,7 @@ services:
     depends_on:
       - ewm-db
     environment:
-      - EWM_SERVER_URL=http://server:9090
+      - STATS_SERVER_URL=http://stats-server:9090
       - EWM_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
       - POSTGRES_EWM_USER=postgres
       - POSTGRES_EWM_PASSWORD=postgres
