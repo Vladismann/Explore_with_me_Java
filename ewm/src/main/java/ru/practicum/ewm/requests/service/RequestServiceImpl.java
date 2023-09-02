@@ -72,10 +72,10 @@ public class RequestServiceImpl implements RequestService {
         if (request.getRequester().getId() != userId) {
             throw new NotFoundException(String.format("Object with id=%s was not found", requestId));
         }
-        if (request.getStatus().equals(REJECTED)) {
+        if (request.getStatus().equals(REJECTED) || request.getStatus().equals(CANCELED)) {
             throw new WrongConditionsException("Reject is not required");
         }
-        request.setStatus(REJECTED);
+        request.setStatus(CANCELED);
         requestRepo.save(request);
         log.info("Отменен запрос на участие: {}", requestId);
         return RequestMapper.requestToParticipationRequestDto(request);
