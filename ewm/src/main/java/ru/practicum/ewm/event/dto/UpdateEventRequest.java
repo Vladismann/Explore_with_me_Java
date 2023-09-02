@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm.event.model.EventStateAction;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMAT;
@@ -17,10 +18,12 @@ import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMAT;
 @Builder
 public class UpdateEventRequest {
 
+    @Size(min = 20, max = 2000)
     private String annotation;
 
     private Long category;
 
+    @Size(min = 20, max = 7000)
     private String description;
 
     @JsonFormat(pattern = DEFAULT_DATE_FORMAT)
@@ -36,5 +39,6 @@ public class UpdateEventRequest {
 
     private EventStateAction stateAction;
 
+    @Size(min = 3, max = 120)
     private String title;
 }

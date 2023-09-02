@@ -50,9 +50,9 @@ public class PrivateEventController {
     }
 
     @PatchMapping(BY_ID_PATH)
-    public EventFullDto getUserEvent(@PathVariable long userId,
+    public EventFullDto updateUserEvent(@PathVariable long userId,
                                      @PathVariable long id,
-                                     @RequestBody UpdateEventRequest newEventDto) {
+                                     @Valid @RequestBody UpdateEventRequest newEventDto) {
         log.info(RECEIVED_PATCH, "/users/{userId}/events", userId);
         return privateEventService.updateEvent(userId, id, newEventDto);
     }
