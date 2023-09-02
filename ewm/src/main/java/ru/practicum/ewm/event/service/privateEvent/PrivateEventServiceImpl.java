@@ -48,7 +48,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final RequestRepo requestRepo;
 
     private void checkEventDateIsCorrect(LocalDateTime eventDate) {
-        if (eventDate !=null && eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
+        if (eventDate != null && eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
             throw new WrongConditionsException(
                     String.format("Field: eventDate. Error: Дата должна быть больше текущей на 2ч. Value: %S", eventDate));
         }
