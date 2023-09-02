@@ -26,6 +26,13 @@ public class EndpointHitService {
 
     @Transactional(readOnly = true)
     public List<GetStatsDto> getEndpointHitStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (start == null || end == null) {
+            throw new IllegalArgumentException("Set start and end.");
+        }
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("End must be greater than start.");
+        }
+
         if (unique) {
             return endpointHitRepo.findAllByTimestampBetweenAndUrisInDistinct(start, end, uris);
         } else {

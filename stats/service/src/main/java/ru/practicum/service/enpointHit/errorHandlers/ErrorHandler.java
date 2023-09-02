@@ -27,9 +27,26 @@ public class ErrorHandler {
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 
-    @ExceptionHandler({Throwable.class})
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleValidation(final Exception e) {
+        String message;
+        if (e.getMessage().equals("null")) {
+            message = e.getStackTrace()[0].getMethodName() + ". Line: " + e.getStackTrace()[0].getLineNumber() + " " + e.getMessage();
+            log.error(e.getStackTrace()[0].toString() + " " + e.getMessage());
+        } else {
+            log.info(e.getMessage());
+            message = e.getMessage();
+        }
+        return new ApiError(HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                INCORRECT_DATA,
+                message,
+                LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
+    }
+
+    @ExceptionHandler({Error.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handleNotFound(final Throwable e) {
+    public ApiError handleNotFound(final Error e) {
         log.info(e.getMessage());
         return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 INCORRECT_DATA,

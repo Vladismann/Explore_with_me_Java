@@ -63,10 +63,17 @@ public class ErrorHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidation(final Exception e) {
-        log.error(e.getStackTrace()[0].toString() + " " + e.getMessage());
+        String message;
+        if (e.getMessage().equals("null")) {
+            message = e.getStackTrace()[0].getMethodName() + ". Line: " + e.getStackTrace()[0].getLineNumber() + " " + e.getMessage();
+            log.error(e.getStackTrace()[0].toString() + " " + e.getMessage());
+        } else {
+            log.info(e.getMessage());
+            message = e.getMessage();
+        }
         return new ApiError(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 INCORRECT_DATA,
-                e.getStackTrace()[0].getMethodName() + ". Line: " + e.getStackTrace()[0].getLineNumber() + " " + e.getMessage(),
+                message,
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 
