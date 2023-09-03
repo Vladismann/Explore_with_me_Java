@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -35,6 +36,7 @@ public class NewEventDto {
     @JsonFormat(pattern = DEFAULT_DATE_FORMAT)
     private LocalDateTime eventDate;
 
+    @Valid
     @NotNull
     private LocationDto location;
 

@@ -44,9 +44,9 @@ public class ErrorHandler {
                 LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
     }
 
-    @ExceptionHandler({Error.class})
+    @ExceptionHandler({Throwable.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handleNotFound(final Error e) {
+    public ApiError handleNotFound(final Throwable e) {
         log.info(e.getMessage());
         return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 INCORRECT_DATA,

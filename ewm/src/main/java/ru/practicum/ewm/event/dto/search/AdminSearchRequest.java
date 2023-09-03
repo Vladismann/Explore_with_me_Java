@@ -28,7 +28,7 @@ public class AdminSearchRequest {
     @DateTimeFormat(pattern = DEFAULT_DATE_FORMAT)
     private LocalDateTime rangeEnd;
     @PositiveOrZero
-    private int from = 0;
+    private int from;
     @Positive
     private int size = 10;
 }

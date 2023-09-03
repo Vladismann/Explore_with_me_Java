@@ -3,6 +3,7 @@ package ru.practicum.ewm.event.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.StatsClient;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
 import ru.practicum.dto.EndpointHitDto.EventsAndViewsDto;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class EventServiceCommon {
 
     private final StatsClient stats;
@@ -35,6 +37,7 @@ public class EventServiceCommon {
         stats.create(addEndpointHitDto);
     }
 
+    @Transactional(readOnly = true)
     public Map<Long, Long> getViews(List<Event> events) {
         List<String> eventUris = events.stream().map(event -> "/events/" + event.getId()).collect(Collectors.toList());
         List<EventsAndViewsDto> eventsAndViewsDto = stats.getViews(eventUris);
@@ -46,6 +49,7 @@ public class EventServiceCommon {
                 .collect(Collectors.toMap(o -> Long.parseLong(o.getUri().replace("/events/", "")), EventsAndViewsDto::getViews));
     }
 
+    @Transactional(readOnly = true)
     public Map<Long, Integer> getConfirmedRequests(List<Event> events) {
         List<Long> eventsIds = events.stream().map(Event::getId).collect(Collectors.toList());
         List<EventsAndRequests> eventsAndRequests = requestRepo.findAllRequestsByEventIds(eventsIds);

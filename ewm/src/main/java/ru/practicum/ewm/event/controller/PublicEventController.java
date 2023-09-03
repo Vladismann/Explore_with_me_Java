@@ -2,10 +2,7 @@ package ru.practicum.ewm.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.search.PublicSearchRequest;
 import ru.practicum.ewm.event.service.publicEvent.PublicEventService;
@@ -26,14 +23,14 @@ public class PublicEventController {
     private final PublicEventService service;
 
     @GetMapping(BY_ID_PATH)
-    EventFullDto get(@PathVariable Long id, HttpServletRequest request) {
+    public EventFullDto get(@PathVariable Long id, HttpServletRequest request) {
         log.info(RECEIVED_GET, "/events", id);
         return service.getEvent(id, request);
     }
 
     @GetMapping
-    List<EventFullDto> getAll(@Valid PublicSearchRequest request,
-                              HttpServletRequest servletRequest) {
+    public List<EventFullDto> getAll(@Valid @RequestParam PublicSearchRequest request,
+                                     HttpServletRequest servletRequest) {
         log.info(RECEIVED_GET, "/events");
         return service.getAll(request, servletRequest);
     }

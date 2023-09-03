@@ -24,14 +24,14 @@ public class AdminEventController {
     private final AdminEventService adminEventService;
 
     @GetMapping
-    List<EventFullDto> getAll(@Valid AdminSearchRequest request) {
+    public List<EventFullDto> getAll(@Valid AdminSearchRequest request) {
         log.info(RECEIVED_GET, "/admin/events");
         return adminEventService.getAll(request);
     }
 
     @PatchMapping(BY_ID_PATH)
-    EventFullDto update(@PathVariable Long id,
-                        @Valid @RequestBody UpdateEventRequest updateEventRequest) {
+    public EventFullDto update(@PathVariable Long id,
+                               @Valid @RequestBody UpdateEventRequest updateEventRequest) {
         log.info(RECEIVED_PATCH, "/admin/events", id);
         return adminEventService.updateEvent(id, updateEventRequest);
     }

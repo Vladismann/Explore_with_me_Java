@@ -22,20 +22,20 @@ public class RequestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ParticipationRequestDto create(@PathVariable Long userId,
+    public ParticipationRequestDto create(@PathVariable Long userId,
                                    @RequestParam Long eventId) {
         log.info(RECEIVED_POST, "/users/{userId}/requests", eventId);
         return service.createRequest(userId, eventId);
     }
 
     @GetMapping
-    List<ParticipationRequestDto> getAll(@PathVariable Long userId) {
+    public List<ParticipationRequestDto> getAll(@PathVariable Long userId) {
         log.info(RECEIVED_GET, "/users/{userId}/requests", userId);
         return service.getAll(userId);
     }
 
     @PatchMapping("/{requestId}/cancel")
-    ParticipationRequestDto update(@PathVariable Long userId,
+    public ParticipationRequestDto update(@PathVariable Long userId,
                                    @PathVariable Long requestId) {
         log.info(RECEIVED_PATCH, userId, requestId);
         return service.updateRequest(userId, requestId);

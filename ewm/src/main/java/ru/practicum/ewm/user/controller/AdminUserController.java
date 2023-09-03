@@ -9,6 +9,8 @@ import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 import static ru.practicum.dto.Common.CommonForPaths.BY_ID_PATH;
@@ -38,8 +40,8 @@ public class AdminUserController {
 
     @GetMapping()
     public List<UserDto> getAllUsers(@RequestParam(required = false) List<Long> ids,
-                                     @RequestParam(defaultValue = "0") int from,
-                                     @RequestParam(defaultValue = "10") int size) {
+                                     @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                     @RequestParam(defaultValue = "10") @Positive int size) {
         log.info(RECEIVED_GET, "/admin/users");
         return userService.getUsers(ids, from, size);
     }

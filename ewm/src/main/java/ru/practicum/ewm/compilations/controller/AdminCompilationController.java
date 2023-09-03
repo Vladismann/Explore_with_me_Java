@@ -24,13 +24,13 @@ public class AdminCompilationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    CompilationDto create(@Valid @RequestBody NewCompilationDto newCompilationDto) {
+    public CompilationDto create(@Valid @RequestBody NewCompilationDto newCompilationDto) {
         log.info(RECEIVED_POST, "/admin/compilations");
         return service.create(newCompilationDto);
     }
 
     @PatchMapping(BY_ID_PATH)
-    CompilationDto update(@PathVariable Long id,
+    public CompilationDto update(@PathVariable Long id,
                           @Valid @RequestBody UpdateCompilationRequest request) {
         log.info(RECEIVED_PATCH, "/admin/compilations", id);
         return service.update(id, request);
@@ -38,7 +38,7 @@ public class AdminCompilationController {
 
     @DeleteMapping(BY_ID_PATH)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         log.info(RECEIVED_DELETE, "/admin/compilations", id);
         service.delete(id);
     }

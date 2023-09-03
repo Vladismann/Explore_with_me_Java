@@ -30,7 +30,7 @@ public class PublicSearchRequest {
     private Boolean onlyAvailable;
     private EventSort sort;
     @PositiveOrZero
-    private int from = 0;
+    private int from;
     @Positive
     private int size = 10;
 }

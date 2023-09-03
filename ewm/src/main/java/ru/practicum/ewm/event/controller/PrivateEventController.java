@@ -13,6 +13,8 @@ import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.requests.dto.ParticipationRequestDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 import static ru.practicum.dto.Common.CommonForPaths.BY_ID_PATH;
@@ -36,8 +38,8 @@ public class PrivateEventController {
 
     @GetMapping()
     public List<EventFullDto> getAllUserEvents(@PathVariable long userId,
-                                               @RequestParam(defaultValue = "0") int from,
-                                               @RequestParam(defaultValue = "10") int size) {
+                                               @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                               @RequestParam(defaultValue = "10") @Positive int size) {
         log.info(RECEIVED_GET, "/users/{userId}/events", userId);
         return privateEventService.getUserEvents(userId, from, size);
     }
@@ -51,23 +53,23 @@ public class PrivateEventController {
 
     @PatchMapping(BY_ID_PATH)
     public EventFullDto updateUserEvent(@PathVariable long userId,
-                                     @PathVariable long id,
-                                     @Valid @RequestBody UpdateEventRequest newEventDto) {
+                                        @PathVariable long id,
+                                        @Valid @RequestBody UpdateEventRequest newEventDto) {
         log.info(RECEIVED_PATCH, "/users/{userId}/events", userId);
         return privateEventService.updateEvent(userId, id, newEventDto);
     }
 
     @GetMapping("/{eventId}/requests")
-    List<ParticipationRequestDto> getAllRequestsByForEvent(@PathVariable Long eventId,
-                                                           @PathVariable Long userId) {
+    public List<ParticipationRequestDto> getAllRequestsByForEvent(@PathVariable Long eventId,
+                                                                  @PathVariable Long userId) {
         log.info(RECEIVED_GET, "/{eventId}/requests", "/users/{userId}/events");
         return privateEventService.getAllRequestsByEvent(eventId, userId);
     }
 
     @PatchMapping("/{eventId}/requests")
-    EventRequestStatusUpdateResult updateRequestsForEvent(@PathVariable Long eventId,
-                                                          @PathVariable Long userId,
-                                                          @Valid @RequestBody EventRequestStatusUpdateRequest request) {
+    public EventRequestStatusUpdateResult updateRequestsForEvent(@PathVariable Long eventId,
+                                                                 @PathVariable Long userId,
+                                                                 @Valid @RequestBody EventRequestStatusUpdateRequest request) {
         log.info(RECEIVED_PATCH, "/{eventId}/requests", "/users/{userId}/events");
         return privateEventService.updateEventRequestsStatus(eventId, userId, request);
     }
