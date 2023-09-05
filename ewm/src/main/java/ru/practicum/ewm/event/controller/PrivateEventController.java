@@ -75,4 +75,12 @@ public class PrivateEventController {
         log.info(RECEIVED_PATCH, "/{eventId}/requests", "/users/{userId}/events");
         return privateEventService.updateEventRequestsStatus(eventId, userId, request);
     }
+
+    @GetMapping("/subscriptions")
+    public List<EventFullDto> getUserSubscriptionsEvents(@PathVariable long userId,
+                                                         @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                                         @RequestParam(defaultValue = "10") @Positive int size) {
+        log.info(RECEIVED_GET, "/users/{userId}/events/subscriptions", userId);
+        return privateEventService.getUserSubscriptionsEvents(userId, from, size);
+    }
 }

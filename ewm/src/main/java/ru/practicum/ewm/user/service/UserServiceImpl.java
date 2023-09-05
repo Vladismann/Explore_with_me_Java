@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.common.CustomPageRequest;
+import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.user.dto.NewUserRequest;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserMapper;
@@ -55,13 +56,6 @@ public class UserServiceImpl implements UserService {
         return users;
     }
 
-    private void checkSubscribingIsExists(long subscriberId, long userId) {
-        Subscription existsSubscription = subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId);
-        if (existsSubscription != null) {
-            throw new IllegalArgumentException("Already subscribed.");
-        }
-    }
-
     @Override
     public void subscribe(long subscriberId, long userId) {
         CommonMethods.checkObjectIsExists(subscriberId, userRepo);
@@ -70,7 +64,10 @@ public class UserServiceImpl implements UserService {
         if (!user.isSubscribers()) {
             throw new IllegalArgumentException("Subscription not available for user with id=" + userId);
         }
-        checkSubscribingIsExists(subscriberId, userId);
+        Subscription existsSubscription = subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId);
+        if (existsSubscription != null) {
+            throw new IllegalArgumentException("Already subscribed.");
+        }
         User subscriber = userRepo.getReferenceById(subscriberId);
         Subscription subscription = Subscription.builder().subscriber(subscriber).user(user).created(LocalDateTime.now()).build();
         subscriptionsRepo.save(subscription);
@@ -81,8 +78,11 @@ public class UserServiceImpl implements UserService {
     public void unsubscribe(long subscriberId, long userId) {
         CommonMethods.checkObjectIsExists(subscriberId, userRepo);
         CommonMethods.checkObjectIsExists(userId, userRepo);
-        checkSubscribingIsExists(subscriberId, userId);
-        subscriptionsRepo.deleteById(subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId).getId());
+        Subscription existsSubscription = subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId);
+        if (existsSubscription == null) {
+            throw new NotFoundException("Subscription not found.");
+        }
+        subscriptionsRepo.deleteById(existsSubscription.getId());
         log.info("Пользователь с id={} отменил подписку на пользователя с id={}", subscriberId, userId);
     }
 }
