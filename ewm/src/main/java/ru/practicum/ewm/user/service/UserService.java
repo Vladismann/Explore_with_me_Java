@@ -12,4 +12,8 @@ public interface UserService {
     void deleteUser(long id);
 
     List<UserDto> getUsers(List<Long> ids, int from, int size);
+
+    void subscribe(long subscriberId, long userId);
+
+    void unsubscribe(long subscriberId, long userId);
 }

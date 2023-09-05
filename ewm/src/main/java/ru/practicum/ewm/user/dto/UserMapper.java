@@ -11,10 +11,17 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     public User newUserRequestToUser(NewUserRequest newUserRequest) {
-        return User.builder()
+        User user = User.builder()
                 .email(newUserRequest.getEmail())
                 .name(newUserRequest.getName())
                 .build();
+        //Проверяем, что пользователь при регистрации, возможно, сразу отменил подписки на себя. Если не указано, то по умолчанию = true
+        if (newUserRequest.getSubscribers() != null) {
+            user.setSubscribers(newUserRequest.getSubscribers());
+        } else {
+            user.setSubscribers(true);
+        }
+        return user;
     }
 
     public UserDto userToUserDto(User user) {
@@ -22,6 +29,7 @@ public class UserMapper {
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
+                .subscribers(user.isSubscribers())
                 .build();
     }
 

@@ -14,4 +14,6 @@ public class UserDto {
     private long id;
     private String email;
     private String name;
+    //в будущем использование для настроек кабинета пользователя
+    private boolean subscribers;
 }

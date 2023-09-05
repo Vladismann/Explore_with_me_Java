@@ -20,4 +20,7 @@ public class User {
     private String name;
     @Column(nullable = false, unique = true)
     private String email;
+    //признак, что пользователь разрешает подписку на себя
+    @Column(nullable = false)
+    private boolean subscribers;
 }

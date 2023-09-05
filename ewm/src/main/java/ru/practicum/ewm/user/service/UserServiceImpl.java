@@ -10,7 +10,9 @@ import ru.practicum.ewm.common.CustomPageRequest;
 import ru.practicum.ewm.user.dto.NewUserRequest;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserMapper;
+import ru.practicum.ewm.user.model.Subscription;
 import ru.practicum.ewm.user.model.User;
+import ru.practicum.ewm.user.repo.SubscriptionsRepo;
 import ru.practicum.ewm.user.repo.UserRepo;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
+    private final SubscriptionsRepo subscriptionsRepo;
 
     @Override
     public UserDto createUser(NewUserRequest dto) {
@@ -49,5 +52,36 @@ public class UserServiceImpl implements UserService {
         }
         log.info("Запрошен список пользователей в размере: {}", users.size());
         return users;
+    }
+
+    private long checkSubscribingIsExists(long subscriberId, long userId) {
+        Subscription existsSubscription = subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId);
+        if (existsSubscription != null) {
+            throw new IllegalArgumentException("Already subscribed.");
+        }
+        return existsSubscription.getId();
+    }
+
+    @Override
+    public void subscribe(long subscriberId, long userId) {
+        CommonMethods.checkObjectIsExists(subscriberId, userRepo);
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        User user = userRepo.getReferenceById(userId);
+        if (!user.isSubscribers()) {
+            throw new IllegalArgumentException("Subscription not available for user with id=" + userId);
+        }
+        checkSubscribingIsExists(subscriberId, userId);
+        User subscriber = userRepo.getReferenceById(subscriberId);
+        Subscription subscription = Subscription.builder().subscriber(subscriber).user(user).build();
+        subscriptionsRepo.save(subscription);
+        log.info("Пользователь с id={} подписался на пользователя с id={}", subscriberId, userId);
+    }
+
+    @Override
+    public void unsubscribe(long subscriberId, long userId) {
+        CommonMethods.checkObjectIsExists(subscriberId, userRepo);
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        subscriptionsRepo.deleteById(checkSubscribingIsExists(subscriberId, userId));
+        log.info("Пользователь с id={} отменил подписку на пользователя с id={}", subscriberId, userId);
     }
 }
