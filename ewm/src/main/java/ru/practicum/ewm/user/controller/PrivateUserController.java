@@ -19,21 +19,21 @@ import static ru.practicum.dto.Common.Messages.RECEIVED_POST;
 @Validated
 public class PrivateUserController {
 
-    UserService userService;
+    private final UserService userService;
 
-    @PostMapping("{subscriberId}/subscriptions")
+    @PostMapping("/subscriptions")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void subscribeToUser(@PathVariable long subscriberId,
-                                @RequestParam @Positive int userId) {
-        log.info(RECEIVED_POST, "/users", "{subscriberId}/subscriptions");
+    public void subscribeToUser(@RequestParam @Positive long subscriberId,
+                                @RequestParam @Positive long userId) {
+        log.info(RECEIVED_POST, "/users/subscriptions", subscriberId);
         userService.subscribe(subscriberId, userId);
     }
 
-    @DeleteMapping("{subscriberId}/subscriptions")
+    @DeleteMapping("/subscriptions")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSubscription(@PathVariable long subscriberId,
-                                   @RequestParam @Positive int userId) {
-        log.info(RECEIVED_DELETE, "/users", "{subscriberId}/subscriptions");
+    public void deleteSubscription(@RequestParam @Positive long subscriberId,
+                                   @RequestParam @Positive long userId) {
+        log.info(RECEIVED_DELETE, "/users/subscriptions", subscriberId);
         userService.unsubscribe(subscriberId, userId);
     }
 }

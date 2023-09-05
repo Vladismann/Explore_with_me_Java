@@ -15,6 +15,7 @@ import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repo.SubscriptionsRepo;
 import ru.practicum.ewm.user.repo.UserRepo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -54,12 +55,11 @@ public class UserServiceImpl implements UserService {
         return users;
     }
 
-    private long checkSubscribingIsExists(long subscriberId, long userId) {
+    private void checkSubscribingIsExists(long subscriberId, long userId) {
         Subscription existsSubscription = subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId);
         if (existsSubscription != null) {
             throw new IllegalArgumentException("Already subscribed.");
         }
-        return existsSubscription.getId();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         }
         checkSubscribingIsExists(subscriberId, userId);
         User subscriber = userRepo.getReferenceById(subscriberId);
-        Subscription subscription = Subscription.builder().subscriber(subscriber).user(user).build();
+        Subscription subscription = Subscription.builder().subscriber(subscriber).user(user).created(LocalDateTime.now()).build();
         subscriptionsRepo.save(subscription);
         log.info("Пользователь с id={} подписался на пользователя с id={}", subscriberId, userId);
     }
@@ -81,7 +81,8 @@ public class UserServiceImpl implements UserService {
     public void unsubscribe(long subscriberId, long userId) {
         CommonMethods.checkObjectIsExists(subscriberId, userRepo);
         CommonMethods.checkObjectIsExists(userId, userRepo);
-        subscriptionsRepo.deleteById(checkSubscribingIsExists(subscriberId, userId));
+        checkSubscribingIsExists(subscriberId, userId);
+        subscriptionsRepo.deleteById(subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId).getId());
         log.info("Пользователь с id={} отменил подписку на пользователя с id={}", subscriberId, userId);
     }
 }
