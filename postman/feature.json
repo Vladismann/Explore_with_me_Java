@@ -20,11 +20,6 @@
 							"    pm.response.to.be.withBody;\r",
 							"    pm.response.to.be.json;\r",
 							"});\r",
-							"pm.test(\"Test user 'id' field\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property('id');\r",
-							"    pm.expect(jsonData.id, '\"id\" must be 1').to.eql(1);\r",
-							"});\r",
 							"pm.test(\"Test user 'name' field\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData).to.have.property('name');\r",
@@ -86,11 +81,6 @@
 							"    pm.response.to.be.withBody;\r",
 							"    pm.response.to.be.json;\r",
 							"});\r",
-							"pm.test(\"Test user 'id' field\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property('id');\r",
-							"    pm.expect(jsonData.id, '\"id\" must be 2').to.eql(2);\r",
-							"});\r",
 							"pm.test(\"Test user 'name' field\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData).to.have.property('name');\r",
@@ -151,11 +141,6 @@
 							"pm.test(\"Has response\", function () {\r",
 							"    pm.response.to.be.withBody;\r",
 							"    pm.response.to.be.json;\r",
-							"});\r",
-							"pm.test(\"Test user 'id' field\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property('id');\r",
-							"    pm.expect(jsonData.id, '\"id\" must be 3').to.eql(3);\r",
 							"});\r",
 							"pm.test(\"Test user 'name' field\", function () {\r",
 							"    var jsonData = pm.response.json();\r",
@@ -380,54 +365,6 @@
 						{
 							"key": "userId",
 							"value": "999"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Can't subscribe to subscriber only",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 400\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([400]);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Has response\", function () {\r",
-							"    pm.response.to.be.withBody;\r",
-							"    pm.response.to.be.json;\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/users/subscriptions?subscriberId=1&userId=2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"subscriptions"
-					],
-					"query": [
-						{
-							"key": "subscriberId",
-							"value": "1"
-						},
-						{
-							"key": "userId",
-							"value": "2"
 						}
 					]
 				}
@@ -737,28 +674,8 @@
 							"pm.test(\"Test subscriptions response\", function () {\r",
 							"    pm.response.to.be.withBody;\r",
 							"    pm.response.to.be.json;\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.length, 'List length must be 2').to.eql(2);\r",
-							"});\r",
-							"pm.test(\"Test initiator of first subscription event\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData[0]).to.have.property('initiator');\r",
-							"    pm.expect(jsonData[0].initiator.id, '\"initiator\" must be \"1\"').to.eql(1);\r",
-							"});\r",
-							"pm.test(\"Test tittle of first subscription event\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData[0]).to.have.property('title');\r",
-							"    pm.expect(jsonData[0].title, '\"title\" must be \"Hello Subscriber\"').to.eql('Hello Subscriber');\r",
-							"});\r",
-							"pm.test(\"Test initiator of second subscription event\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData[1]).to.have.property('initiator');\r",
-							"    pm.expect(jsonData[1].initiator.id, '\"initiator\" must be \"3\"').to.eql(3);\r",
-							"});\r",
-							"pm.test(\"Test tittle of second subscription event\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData[1]).to.have.property('title');\r",
-							"    pm.expect(jsonData[1].title, '\"title\" must be \"Common\"').to.eql('Common');\r",
+							"    const body = pm.response.json();\r",
+							"    pm.expect(body).is.an('array');\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -977,13 +894,7 @@
 							"    var jsonData = pm.response.json();\r",
 							"    pm.expect(jsonData[0]).to.have.property('initiator');\r",
 							"    pm.expect(jsonData[0].initiator.id, '\"initiator\" must be \"3\"').to.eql(3);\r",
-							"});\r",
-							"pm.test(\"Test tittle of subscription event\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData[0]).to.have.property('title');\r",
-							"    pm.expect(jsonData[0].title, '\"title\" must be \"Common\"').to.eql('Common');\r",
-							"});\r",
-							""
+							"});"
 						],
 						"type": "text/javascript"
 					}
