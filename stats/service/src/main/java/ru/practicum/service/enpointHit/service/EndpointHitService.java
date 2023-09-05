@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EndpointHitDto.AddEndpointHitDto;
+import ru.practicum.dto.EndpointHitDto.EventsAndViewsDto;
 import ru.practicum.dto.EndpointHitDto.GetEndpointHitDto;
 import ru.practicum.dto.EndpointHitDto.GetStatsDto;
 import ru.practicum.service.enpointHit.model.EndpointHitMapper;
@@ -25,10 +26,22 @@ public class EndpointHitService {
 
     @Transactional(readOnly = true)
     public List<GetStatsDto> getEndpointHitStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (start == null || end == null) {
+            throw new IllegalArgumentException("Set start and end.");
+        }
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("End must be greater than start.");
+        }
+
         if (unique) {
             return endpointHitRepo.findAllByTimestampBetweenAndUrisInDistinct(start, end, uris);
         } else {
             return endpointHitRepo.findAllByTimestampBetweenAndUrisIn(start, end, uris);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventsAndViewsDto> getEventViews(List<String> uris) {
+        return endpointHitRepo.findEventsViews(uris);
     }
 }

@@ -3,6 +3,7 @@ package ru.practicum.service.enpointHit.repo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import ru.practicum.dto.EndpointHitDto.EventsAndViewsDto;
 import ru.practicum.dto.EndpointHitDto.GetStatsDto;
 import ru.practicum.service.enpointHit.model.EndpointHit;
 
@@ -27,4 +28,11 @@ public interface EndpointHitRepo extends JpaRepository<EndpointHit, Long> {
             "GROUP BY h.uri, h.app " +
             "ORDER BY hits desc")
     List<GetStatsDto> findAllByTimestampBetweenAndUrisIn(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("uris") List<String> uris);
+
+    @Query("SELECT new ru.practicum.dto.EndpointHitDto.EventsAndViewsDto(h.uri, count(distinct(h.ip)) as views) " +
+            "from EndpointHit h " +
+            "WHERE h.uri IN (:uris) " +
+            "GROUP BY h.uri " +
+            "ORDER BY views asc")
+    List<EventsAndViewsDto> findEventsViews(@Param("uris") List<String> uris);
 }
