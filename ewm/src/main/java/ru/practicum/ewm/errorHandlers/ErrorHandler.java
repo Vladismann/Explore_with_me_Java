@@ -11,6 +11,7 @@ import ru.practicum.dto.Common.ApiError;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.WrongConditionsException;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 import static ru.practicum.dto.Common.Constants.DEFAULT_DATE_FORMATTER;
@@ -33,6 +34,16 @@ public class ErrorHandler {
     @ExceptionHandler({NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFound(final NotFoundException e) {
+        log.info(e.getMessage());
+        return new ApiError(HttpStatus.NOT_FOUND.getReasonPhrase(),
+                NOT_FOUND,
+                e.getMessage(),
+                LocalDateTime.now().format(DEFAULT_DATE_FORMATTER));
+    }
+
+    @ExceptionHandler({EntityNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleNotFound(final EntityNotFoundException e) {
         log.info(e.getMessage());
         return new ApiError(HttpStatus.NOT_FOUND.getReasonPhrase(),
                 NOT_FOUND,

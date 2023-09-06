@@ -23,5 +23,5 @@ public interface PrivateEventService {
 
     EventRequestStatusUpdateResult updateEventRequestsStatus(Long eventId, Long userId, EventRequestStatusUpdateRequest requestsForUpdate);
 
-    public List<EventFullDto> getUserSubscriptionsEvents(long userId, int from, int size);
+    List<EventFullDto> getUserSubscriptionsEvents(long userId, int from, int size);
 }

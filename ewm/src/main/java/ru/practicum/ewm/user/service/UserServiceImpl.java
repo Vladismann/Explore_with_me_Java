@@ -9,6 +9,7 @@ import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.common.CustomPageRequest;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.user.dto.NewUserRequest;
+import ru.practicum.ewm.user.dto.SubscriptionsDto;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.model.Subscription;
@@ -57,9 +58,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void subscribe(long subscriberId, long userId) {
-        CommonMethods.checkObjectIsExists(subscriberId, userRepo);
-        CommonMethods.checkObjectIsExists(userId, userRepo);
+    public List<SubscriptionsDto> subscribe(long subscriberId, long userId) {
+        User subscriber = userRepo.getReferenceById(subscriberId);
         User user = userRepo.getReferenceById(userId);
         if (!user.isSubscribers()) {
             throw new IllegalArgumentException("Subscription not available for user with id=" + userId);
@@ -68,14 +68,14 @@ public class UserServiceImpl implements UserService {
         if (existsSubscription != null) {
             throw new IllegalArgumentException("Already subscribed.");
         }
-        User subscriber = userRepo.getReferenceById(subscriberId);
         Subscription subscription = Subscription.builder().subscriber(subscriber).user(user).created(LocalDateTime.now()).build();
         subscriptionsRepo.save(subscription);
         log.info("Пользователь с id={} подписался на пользователя с id={}", subscriberId, userId);
+        return UserMapper.subscriptionsToSubscriptionDto(subscriptionsRepo.findBySubscriberId(subscriberId));
     }
 
     @Override
-    public void unsubscribe(long subscriberId, long userId) {
+    public List<SubscriptionsDto> unsubscribe(long subscriberId, long userId) {
         CommonMethods.checkObjectIsExists(subscriberId, userRepo);
         CommonMethods.checkObjectIsExists(userId, userRepo);
         Subscription existsSubscription = subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId);
@@ -84,5 +84,6 @@ public class UserServiceImpl implements UserService {
         }
         subscriptionsRepo.deleteById(existsSubscription.getId());
         log.info("Пользователь с id={} отменил подписку на пользователя с id={}", subscriberId, userId);
+        return UserMapper.subscriptionsToSubscriptionDto(subscriptionsRepo.findBySubscriberId(subscriberId));
     }
 }

@@ -2,6 +2,7 @@ package ru.practicum.ewm.user.dto;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
+import ru.practicum.ewm.user.model.Subscription;
 import ru.practicum.ewm.user.model.User;
 
 import java.util.List;
@@ -39,5 +40,14 @@ public class UserMapper {
 
     public List<UserDto> userToUserDto(Page<User> users) {
         return users.stream().map(UserMapper::userToUserDto).collect(Collectors.toList());
+    }
+
+    public List<SubscriptionsDto> subscriptionsToSubscriptionDto(List<Subscription> subscriptions) {
+        return subscriptions.stream()
+                .map(subscription -> SubscriptionsDto.builder()
+                        .id(subscription.getId())
+                        .userId(subscription.getUser().getId())
+                        .userName(subscription.getUser().getName()).build())
+                .collect(Collectors.toList());
     }
 }
