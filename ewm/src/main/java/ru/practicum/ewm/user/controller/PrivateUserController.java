@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm.user.dto.SubscriptionsDto;
+import ru.practicum.ewm.user.dto.SubscriptionDto;
 import ru.practicum.ewm.user.service.UserService;
 
 import javax.validation.constraints.Positive;
@@ -25,15 +25,15 @@ public class PrivateUserController {
 
     @PostMapping("/subscriptions")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<SubscriptionsDto> subscribeToUser(@RequestParam @Positive long subscriberId,
-                                                  @RequestParam @Positive long userId) {
+    public List<SubscriptionDto> subscribeToUser(@RequestParam @Positive long subscriberId,
+                                                 @RequestParam @Positive long userId) {
         log.info(RECEIVED_POST, "/users/subscriptions", subscriberId);
         return userService.subscribe(subscriberId, userId);
     }
 
     @DeleteMapping("/subscriptions")
-    public List<SubscriptionsDto> deleteSubscription(@RequestParam @Positive long subscriberId,
-                                                     @RequestParam @Positive long userId) {
+    public List<SubscriptionDto> deleteSubscription(@RequestParam @Positive long subscriberId,
+                                                    @RequestParam @Positive long userId) {
         log.info(RECEIVED_DELETE, "/users/subscriptions", subscriberId);
         return userService.unsubscribe(subscriberId, userId);
     }

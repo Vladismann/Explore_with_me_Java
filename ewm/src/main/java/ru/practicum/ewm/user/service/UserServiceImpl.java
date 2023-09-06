@@ -9,7 +9,7 @@ import ru.practicum.ewm.common.CommonMethods;
 import ru.practicum.ewm.common.CustomPageRequest;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.user.dto.NewUserRequest;
-import ru.practicum.ewm.user.dto.SubscriptionsDto;
+import ru.practicum.ewm.user.dto.SubscriptionDto;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.model.Subscription;
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<SubscriptionsDto> subscribe(long subscriberId, long userId) {
+    public List<SubscriptionDto> subscribe(long subscriberId, long userId) {
         User subscriber = userRepo.getReferenceById(subscriberId);
         User user = userRepo.getReferenceById(userId);
         if (!user.isSubscribers()) {
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<SubscriptionsDto> unsubscribe(long subscriberId, long userId) {
+    public List<SubscriptionDto> unsubscribe(long subscriberId, long userId) {
         CommonMethods.checkObjectIsExists(subscriberId, userRepo);
         CommonMethods.checkObjectIsExists(userId, userRepo);
         Subscription existsSubscription = subscriptionsRepo.findBySubscriberIdAndUserId(subscriberId, userId);

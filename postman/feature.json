@@ -190,14 +190,25 @@
 			"response": []
 		},
 		{
-			"name": "Subscribe user 1 to user 2",
+			"name": "Subscribe user 2 to user 1",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 204\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([204]);\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions user id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('userId');\r",
+							"    pm.expect(jsonData[0].userId, '\"userId\" must be \"1\"').to.eql(1);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -233,14 +244,30 @@
 			"response": []
 		},
 		{
-			"name": "Subscribe user 1 to user 3",
+			"name": "Subscribe user 2 to user 3",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 204\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([204]);\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 2').to.eql(2);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions user id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('userId');\r",
+							"    pm.expect(jsonData[0].userId, '\"userId\" must be \"1\"').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions user id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('userId');\r",
+							"    pm.expect(jsonData[1].userId, '\"userId\" must be \"3\"').to.eql(3);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -269,6 +296,60 @@
 						{
 							"key": "userId",
 							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Subscribe user 3 to user 1 for getting subscriptions by event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions user id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('userId');\r",
+							"    pm.expect(jsonData[0].userId, '\"userId\" must be \"1\"').to.eql(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/subscriptions?subscriberId=3&userId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"subscriptions"
+					],
+					"query": [
+						{
+							"key": "subscriberId",
+							"value": "3"
+						},
+						{
+							"key": "userId",
+							"value": "1"
 						}
 					]
 				}
@@ -746,14 +827,25 @@
 			"response": []
 		},
 		{
-			"name": "Delete subscribe user 1 to user 2",
+			"name": "Delete subscribe user 2 to user 1",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 204\", function () {\r",
-							"    pm.expect(pm.response.code).to.be.oneOf([204]);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions user id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('userId');\r",
+							"    pm.expect(jsonData[0].userId, '\"userId\" must be \"3\"').to.eql(3);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -914,6 +1006,48 @@
 						"users",
 						"2",
 						"events",
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all user 3 subscriptions by his event",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"pm.test(\"Test subscriptions response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    const body = pm.response.json();\r",
+							"    pm.expect(body).is.an('array');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/2/events/3/subscriptions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"2",
+						"events",
+						"3",
 						"subscriptions"
 					]
 				}

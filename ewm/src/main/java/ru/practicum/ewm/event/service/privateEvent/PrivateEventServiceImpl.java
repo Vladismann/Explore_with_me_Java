@@ -27,6 +27,8 @@ import ru.practicum.ewm.requests.dto.RequestMapper;
 import ru.practicum.ewm.requests.model.Request;
 import ru.practicum.ewm.requests.model.StateParticipation;
 import ru.practicum.ewm.requests.repo.RequestRepo;
+import ru.practicum.ewm.user.dto.SubscriptionDto;
+import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repo.SubscriptionsRepo;
 import ru.practicum.ewm.user.repo.UserRepo;
@@ -222,5 +224,15 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         eventFullDto = EventMapper.setViewsAndRequestForListEventFullDto(eventFullDto, views, confirmedRequests);
         log.info("Запрошен список событий подписок пользователя id={}", userId);
         return eventFullDto;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<SubscriptionDto> getEventInitiatorSubscriptions(long userId, long eventId) {
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        Event event = eventRepo.getReferenceById(eventId);
+        long initiatorId = event.getInitiator().getId();
+        log.info("Запрошены подписки пользователя id={} по событию id={}", initiatorId, eventId);
+        return UserMapper.subscriptionsToSubscriptionDto(subscriptionsRepo.findBySubscriberId(initiatorId));
     }
 }

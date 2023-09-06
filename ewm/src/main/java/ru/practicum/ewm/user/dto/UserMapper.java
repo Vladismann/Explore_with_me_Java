@@ -42,9 +42,9 @@ public class UserMapper {
         return users.stream().map(UserMapper::userToUserDto).collect(Collectors.toList());
     }
 
-    public List<SubscriptionsDto> subscriptionsToSubscriptionDto(List<Subscription> subscriptions) {
+    public List<SubscriptionDto> subscriptionsToSubscriptionDto(List<Subscription> subscriptions) {
         return subscriptions.stream()
-                .map(subscription -> SubscriptionsDto.builder()
+                .map(subscription -> SubscriptionDto.builder()
                         .id(subscription.getId())
                         .userId(subscription.getUser().getId())
                         .userName(subscription.getUser().getName()).build())

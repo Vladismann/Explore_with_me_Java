@@ -12,6 +12,7 @@ import ru.practicum.ewm.event.service.privateEvent.PrivateEventService;
 import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.requests.dto.ParticipationRequestDto;
+import ru.practicum.ewm.user.dto.SubscriptionDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -82,5 +83,12 @@ public class PrivateEventController {
                                                          @RequestParam(defaultValue = "10") @Positive int size) {
         log.info(RECEIVED_GET, "/users/{userId}/events/subscriptions", userId);
         return privateEventService.getUserSubscriptionsEvents(userId, from, size);
+    }
+
+    @GetMapping("/{eventId}/subscriptions")
+    public List<SubscriptionDto> getUserSubscriptionsEvents(@PathVariable long userId,
+                                                            @PathVariable long eventId) {
+        log.info(RECEIVED_GET, "/users/{userId}/events/subscriptions", userId);
+        return privateEventService.getEventInitiatorSubscriptions(userId, eventId);
     }
 }
