@@ -1,2 +1,3 @@
-# java-explore-with-me
-Template repository for ExploreWithMe project.
+https://github.com/Vladismann/java-explore-with-me/pull/5
+Добрый день! Часть проверок в тестах пришлось порезать, из-за генерации пользователей и эвентов в postman тестах из прошлых этапов.
+Мои тесты Postman рассчитаны на создание и проверку в пустой БД.

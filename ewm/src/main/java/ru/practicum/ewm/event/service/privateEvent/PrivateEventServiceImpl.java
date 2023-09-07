@@ -17,6 +17,7 @@ import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.model.Location;
 import ru.practicum.ewm.event.repo.EventRepo;
 import ru.practicum.ewm.event.repo.LocationRepo;
+import ru.practicum.ewm.event.service.EventServiceCommon;
 import ru.practicum.ewm.exceptions.NotFoundException;
 import ru.practicum.ewm.exceptions.WrongConditionsException;
 import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateRequest;
@@ -26,11 +27,15 @@ import ru.practicum.ewm.requests.dto.RequestMapper;
 import ru.practicum.ewm.requests.model.Request;
 import ru.practicum.ewm.requests.model.StateParticipation;
 import ru.practicum.ewm.requests.repo.RequestRepo;
+import ru.practicum.ewm.user.dto.SubscriptionDto;
+import ru.practicum.ewm.user.dto.UserMapper;
 import ru.practicum.ewm.user.model.User;
+import ru.practicum.ewm.user.repo.SubscriptionsRepo;
 import ru.practicum.ewm.user.repo.UserRepo;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static ru.practicum.ewm.event.model.EventState.PUBLISHED;
 import static ru.practicum.ewm.requests.model.StateParticipation.*;
@@ -46,6 +51,8 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     private final CategoryRepo categoryRepo;
     private final LocationRepo locationRepo;
     private final RequestRepo requestRepo;
+    private final SubscriptionsRepo subscriptionsRepo;
+    private final EventServiceCommon eventServiceCommon;
 
     private void checkEventDateIsCorrect(LocalDateTime eventDate) {
         if (eventDate != null && eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
@@ -201,4 +208,31 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         return updatedRequests;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<EventFullDto> getUserSubscriptionsEvents(long userId, int from, int size) {
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        Pageable pageable = new CustomPageRequest(from, size);
+        List<Long> subscriptionsIds = subscriptionsRepo.findAllUserSubscriptions(userId);
+        List<Event> events = eventRepo.findAllByInitiatorIdInAndState(subscriptionsIds, PUBLISHED, pageable);
+        if (events.isEmpty()) {
+            return List.of();
+        }
+        Map<Long, Integer> confirmedRequests = eventServiceCommon.getConfirmedRequests(events);
+        Map<Long, Long> views = eventServiceCommon.getViews(events);
+        List<EventFullDto> eventFullDto = EventMapper.eventToEventFullDto(events);
+        eventFullDto = EventMapper.setViewsAndRequestForListEventFullDto(eventFullDto, views, confirmedRequests);
+        log.info("Запрошен список событий подписок пользователя id={}", userId);
+        return eventFullDto;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<SubscriptionDto> getEventInitiatorSubscriptions(long userId, long eventId) {
+        CommonMethods.checkObjectIsExists(userId, userRepo);
+        Event event = eventRepo.getReferenceById(eventId);
+        long initiatorId = event.getInitiator().getId();
+        log.info("Запрошены подписки пользователя id={} по событию id={}", initiatorId, eventId);
+        return UserMapper.subscriptionsToSubscriptionDto(subscriptionsRepo.findBySubscriberId(initiatorId));
+    }
 }

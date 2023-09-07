@@ -22,4 +22,5 @@ public class NewUserRequest {
     @NotBlank(message = "Specify the name")
     @Size(min = 2, max = 250, message = "Allowable size of name 2-250")
     private String name;
+    private Boolean subscribers;
 }

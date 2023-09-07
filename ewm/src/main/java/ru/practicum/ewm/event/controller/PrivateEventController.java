@@ -12,6 +12,7 @@ import ru.practicum.ewm.event.service.privateEvent.PrivateEventService;
 import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.requests.dto.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.requests.dto.ParticipationRequestDto;
+import ru.practicum.ewm.user.dto.SubscriptionDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -74,5 +75,20 @@ public class PrivateEventController {
                                                                  @Valid @RequestBody EventRequestStatusUpdateRequest request) {
         log.info(RECEIVED_PATCH, "/{eventId}/requests", "/users/{userId}/events");
         return privateEventService.updateEventRequestsStatus(eventId, userId, request);
+    }
+
+    @GetMapping("/subscriptions")
+    public List<EventFullDto> getUserSubscriptionsEvents(@PathVariable long userId,
+                                                         @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                                         @RequestParam(defaultValue = "10") @Positive int size) {
+        log.info(RECEIVED_GET, "/users/{userId}/events/subscriptions", userId);
+        return privateEventService.getUserSubscriptionsEvents(userId, from, size);
+    }
+
+    @GetMapping("/{eventId}/subscriptions")
+    public List<SubscriptionDto> getUserSubscriptionsEvents(@PathVariable long userId,
+                                                            @PathVariable long eventId) {
+        log.info(RECEIVED_GET, "/users/{userId}/events", "/{eventId}/subscriptions");
+        return privateEventService.getEventInitiatorSubscriptions(userId, eventId);
     }
 }
