@@ -88,7 +88,7 @@ public class PrivateEventController {
     @GetMapping("/{eventId}/subscriptions")
     public List<SubscriptionDto> getUserSubscriptionsEvents(@PathVariable long userId,
                                                             @PathVariable long eventId) {
-        log.info(RECEIVED_GET, "/users/{userId}/events/subscriptions", userId);
+        log.info(RECEIVED_GET, "/users/{userId}/events", "/{eventId}/subscriptions");
         return privateEventService.getEventInitiatorSubscriptions(userId, eventId);
     }
 }
