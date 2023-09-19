@@ -8,4 +8,4 @@
 ### [**Database schema**](https://dbdiagram.io/d/EWM-6509bfbe02bd1c4a5edeb6d1)
 ![Database Image](DBschema.png)
 
-### Logic and interaction with the database is represented in service classes
+### Logic and interaction with the database is represented in service classes.
